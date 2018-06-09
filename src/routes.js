@@ -29,9 +29,19 @@ const loadableRoutes = {
     component: loadable(() => import('pages/DefaultPages/EmptyPage')),
   },
 
-  //Profile Page
-  '/pages/profile': {
-    component: loadable(() => import('pages/Profile'))
+  //Menu Management Page
+  '/pages/menu-management': {
+    component: loadable(() => import('pages/MenuPage'))
+  },
+
+  //User Management Page
+  '/pages/user-management': {
+    component: loadable(() => import('pages/UserPage'))
+  },
+
+  //Authorization Page
+  '/pages/authorization': {
+    component: loadable(() => import('pages/RolePage'))
   }
 }
 
