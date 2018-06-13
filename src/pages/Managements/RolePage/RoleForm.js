@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Row, Col, Form, Input, Button, Table, Divider, Modal, Popconfirm } from 'antd';
 import _ from 'lodash';
-import axios from '../../axiosIns';
+import axios from '../../../axiosIns';
 
 
 const FormItem = Form.Item;
@@ -11,8 +11,8 @@ const formItemLayout = {
 };
 const columns = [
     {
-        title: 'Group Name',
-        dataIndex: 'group_name'
+        title: 'Role Name',
+        dataIndex: 'role_name'
     }, {
         title: 'Created Date',
         dataIndex: 'create_date',
@@ -32,18 +32,18 @@ const columns = [
     }
 ];
 
-class AddGroupForm extends Component {
+class AddRoleForm extends Component {
     render() {
         const { getFieldDecorator } = this.props.form;
 
         return (
             <Form onSubmit={this.props.handleSubmit} layout="horizontal">
                 <FormItem
-                    label="Group Name"
+                    label="Role Name"
                     {...formItemLayout}
                 >
-                    {getFieldDecorator('groupName', {
-                        rules: [{ required: true, message: 'Please input group name!' }],
+                    {getFieldDecorator('roleName', {
+                        rules: [{ required: true, message: 'Please input role name!' }],
                     })(
                         <Input />
                     )}
@@ -55,7 +55,7 @@ class AddGroupForm extends Component {
                         type="primary"
                         htmlType="submit"
                     >
-                        Add Group
+                        Add Role
                     </Button>
                 </FormItem>
             </Form >
@@ -63,13 +63,13 @@ class AddGroupForm extends Component {
     }
 }
 
-class UpdateGroupForm extends Component {
+class UpdateRoleForm extends Component {
     render() {
         const { getFieldDecorator } = this.props.form;
         const { data } = this.props;
         return (
             <Modal
-                title="Update Group"
+                title="Update Role"
                 visible={this.props.visible}
                 onOk={this.props.onOk}
                 onCancel={this.props.onCancel}
@@ -81,11 +81,11 @@ class UpdateGroupForm extends Component {
                         )}
                     </FormItem>
                     <FormItem
-                        label="Group Name"
+                        label="Role Name"
                         {...formItemLayout}
                     >
-                        {getFieldDecorator('groupName', { initialValue: data.length > 0 ? data[0].group_name : '' }, {
-                            rules: [{ required: true, message: 'Please input group name!' }],
+                        {getFieldDecorator('roleName', { initialValue: data.length > 0 ? data[0].role_name : '' }, {
+                            rules: [{ required: true, message: 'Please input role name!' }],
                         })(
                             <Input />
                         )}
@@ -96,13 +96,13 @@ class UpdateGroupForm extends Component {
     }
 }
 
-const WrappedAddGroupForm = Form.create()(AddGroupForm);
-const WrappedUpdateGroupForm = Form.create()(UpdateGroupForm);
+const WrappedAddRoleForm = Form.create()(AddRoleForm);
+const WrappedUpdateRoleForm = Form.create()(UpdateRoleForm);
 
-class GroupForm extends Component {
+class RoleForm extends Component {
 
     state = {
-        groupList: [],
+        roleList: [],
         selectedRows: [],
         selectedRowKeys: [],
         showUpdateModal: false
@@ -115,9 +115,9 @@ class GroupForm extends Component {
     };
 
     componentDidMount() {
-        axios.get('api/admin/group')
+        axios.get('api/admin/role')
             .then((res) => {
-                this.setState({ groupList: res.data });
+                this.setState({ roleList: res.data });
             })
             .catch((err) => {
                 console.log(err);
@@ -125,14 +125,14 @@ class GroupForm extends Component {
     }
     handleSubmit = (e) => {
         e.preventDefault();
-        this.addGroupForm.validateFields((err, values) => {
+        this.addRoleForm.validateFields((err, values) => {
             if (!err) {
-                axios.post('api/admin/group/add', { ...values })
+                axios.post('api/admin/role/add', { ...values })
                     .then((res) => {
                         console.log(res.data);
-                        let temp = [...this.state.groupList];
+                        let temp = [...this.state.roleList];
                         temp.push(res.data);
-                        this.setState({ groupList: temp });
+                        this.setState({ roleList: temp });
                     })
                     .catch((err) => {
                         console.log(err);
@@ -150,14 +150,14 @@ class GroupForm extends Component {
     }
 
     handleUpdate = () => {
-        this.updateGroupForm.validateFields((err, values) => {
+        this.updateRoleForm.validateFields((err, values) => {
             if (!err) {
-                axios.put('api/admin/group/update', { ...values })
+                axios.put('api/admin/role/update', { ...values })
                     .then((res) => {
                         console.log(res.data);
-                        let temp = [...this.state.groupList];
+                        let temp = [...this.state.roleList];
                         temp.splice(_.findIndex(temp,{_id: res.data._id}),1,{...res.data});
-                        this.setState({ groupList: temp });
+                        this.setState({ roleList: temp });
                         this.closeUpdateModal();
                     })
                     .catch((err) => {
@@ -171,12 +171,12 @@ class GroupForm extends Component {
     }
 
     handleDelete = () => {
-        axios.delete('api/admin/group/delete', { data: { groupIds: this.state.selectedRowKeys } })
+        axios.delete('api/admin/role/delete', { data: { roleIds: this.state.selectedRowKeys } })
             .then((res) => {
                 console.log(res.data);
-                let temp = [...this.state.groupList];
+                let temp = [...this.state.roleList];
                 temp = temp.filter((obj) => !_.includes(res.data, obj._id));
-                this.setState({ groupList: temp, selectedRowKeys: [], selectedRows: [] });
+                this.setState({ roleList: temp, selectedRowKeys: [], selectedRows: [] });
             })
             .catch((err) => {
                 console.log(err);
@@ -184,16 +184,16 @@ class GroupForm extends Component {
     };
 
     render() {
-        const { groupList, selectedRows, showUpdateModal } = this.state;
+        const { roleList, selectedRows, showUpdateModal } = this.state;
         return (
             <Row>
                 <Col span={10}>
-                    <WrappedAddGroupForm
-                        ref={node => this.addGroupForm = node}
+                    <WrappedAddRoleForm
+                        ref={node => this.addRoleForm = node}
                         handleSubmit={this.handleSubmit}
                     />
-                    <WrappedUpdateGroupForm
-                        ref={node => this.updateGroupForm = node}
+                    <WrappedUpdateRoleForm
+                        ref={node => this.updateRoleForm = node}
                         visible={showUpdateModal}
                         onOk={this.handleUpdate}
                         onCancel={this.closeUpdateModal}
@@ -206,11 +206,11 @@ class GroupForm extends Component {
                     <Popconfirm title="Are you sure delete?" onConfirm={this.handleDelete} okText="Yes" cancelText="No">
                         <Button icon="close" type="danger" size="small" disabled={selectedRows.length === 0 ? true : false}>Delete</Button>
                     </Popconfirm>
-                    <Table style={{ marginTop: '5px' }} rowKey={'_id'} columns={columns} dataSource={groupList} rowSelection={this.rowSelection} />
+                    <Table style={{ marginTop: '5px' }} rowKey={'_id'} columns={columns} dataSource={roleList} rowSelection={this.rowSelection} />
                 </Col>
             </Row>
         )
     }
 }
 
-export default GroupForm;
+export default RoleForm;
