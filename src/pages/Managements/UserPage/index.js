@@ -3,6 +3,7 @@ import Page from 'components/LayoutComponents/Page'
 import Helmet from 'react-helmet'
 import UserForm from './UserForm';
 
+
 class UserPage extends Component {
     static defaultProps = {
         pathName: 'User Management',
@@ -14,7 +15,16 @@ class UserPage extends Component {
         return (
             <Page {...props}>
                 <Helmet title="User Management" />
-                <UserForm />
+                <section className="card">
+                    <div className="card-header">
+                        <h5 className="mb-0 mr-3 d-inline-block text-black">
+                            <strong>User &amp; Authorization</strong>
+                        </h5>
+                    </div>
+                    <div className="card-body">
+                        <UserForm />
+                    </div>
+                </section>
             </Page>
         )
     }

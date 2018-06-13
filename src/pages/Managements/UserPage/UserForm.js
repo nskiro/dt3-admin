@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Row, Col, Form, Input, Button, Table, Divider, Modal, Popconfirm } from 'antd';
+import { Row, Col, Form, Input, Button, Table, Divider, Modal, Popconfirm, Select } from 'antd';
 import _ from 'lodash';
 import axios from '../../../axiosIns';
 
 
 const FormItem = Form.Item;
+const Option = Select.Option;
 const formItemLayout = {
     labelCol: { span: 6 },
     wrapperCol: { span: 14 },
@@ -113,7 +114,7 @@ class UpdateUserForm extends Component {
                         label="User Name"
                         {...formItemLayout}
                     >
-                        {getFieldDecorator('userName', {
+                        {getFieldDecorator('username', {
                             rules: [{ required: true, message: 'Please input user name!' }],
                             initialValue: data.length > 0 ? data[0].username : ''
                         })(
@@ -135,7 +136,7 @@ class UpdateUserForm extends Component {
                         label="Full Name"
                         {...formItemLayout}
                     >
-                        {getFieldDecorator('fullName', {
+                        {getFieldDecorator('fullname', {
                             rules: [{ required: true, message: 'Please input user full name!' }],
                             initialValue: data.length > 0 ? data[0].fullname : ''
                         })(
@@ -159,16 +160,54 @@ class UpdateUserForm extends Component {
     }
 }
 
+class AddToGroupForm extends Component {
+    render() {
+        const { getFieldDecorator } = this.props.form;
+        const { data, groupList } = this.props;
+
+        return (
+            <Modal
+                title="Add User To Group"
+                visible={this.props.visible}
+                onOk={this.props.onOk}
+                onCancel={this.props.onCancel}
+            >
+                <Form onSubmit={this.props.handleSubmit} layout="horizontal">
+                    <FormItem>
+                        {getFieldDecorator('id', { initialValue: data })(
+                            <Input style={{ display: 'none', visible: false }} />
+                        )}
+                    </FormItem>
+                    <FormItem>
+                        {getFieldDecorator('groupId')(
+                            <Select onChange={this.handleGroupChange} mode="multiple">
+                                {   
+                                    groupList.map((group) => {
+                                        return <Option value={group._id} key={group._id}>{group.group_name}</Option>;
+                                    })
+                                }
+                            </Select>
+                        )}
+                    </FormItem>
+                </Form>
+            </Modal>
+        );
+    }
+}
+
 const WrappedAddUserForm = Form.create()(AddUserForm);
 const WrappedUpdateUserForm = Form.create()(UpdateUserForm);
+const WrappedAddToGroupForm = Form.create()(AddToGroupForm);
 
 class UserForm extends Component {
 
     state = {
         userList: [],
+        groupList: [],
         selectedRows: [],
         selectedRowKeys: [],
-        showUpdateModal: false
+        showUpdateModal: false,
+        showAddToGroupModal: false
     }
 
     rowSelection = {
@@ -181,6 +220,13 @@ class UserForm extends Component {
         axios.get('api/admin/user')
             .then((res) => {
                 this.setState({ userList: res.data });
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+        axios.get('api/admin/group')
+            .then((res) => {
+                this.setState({ groupList: res.data });
             })
             .catch((err) => {
                 console.log(err);
@@ -212,6 +258,14 @@ class UserForm extends Component {
         this.setState({ showUpdateModal: false });
     }
 
+    showAddToGroupModal = () => {
+        this.setState({ showAddToGroupModal: true });
+    }
+
+    closeAddToGroupModal = () => {
+        this.setState({ showAddToGroupModal: false });
+    }
+
     handleUpdate = () => {
         this.updateUserForm.validateFields((err, values) => {
             if (!err) {
@@ -219,7 +273,7 @@ class UserForm extends Component {
                     .then((res) => {
                         console.log(res.data);
                         let temp = [...this.state.userList];
-                        temp.splice(_.findIndex(temp, { _id: res.data._id }), 1, { ...res.data });
+                        temp.splice(_.findIndex(temp, { _id: res.data.id }), 1, { ...res.data });
                         this.setState({ userList: temp });
                         this.closeUpdateModal();
                     })
@@ -247,7 +301,7 @@ class UserForm extends Component {
     };
 
     render() {
-        const { userList, selectedRows, showUpdateModal } = this.state;
+        const { userList, groupList, selectedRows, selectedRowKeys, showUpdateModal, showAddToGroupModal } = this.state;
         return (
             <Row>
                 <Col span={10}>
@@ -262,8 +316,18 @@ class UserForm extends Component {
                         onCancel={this.closeUpdateModal}
                         data={selectedRows}
                     />
+                    <WrappedAddToGroupForm
+                        ref={node => this.updateUserForm = node}
+                        visible={showAddToGroupModal}
+                        // onOk={this.handleUpdate}
+                        onCancel={this.closeAddToGroupModal}
+                        data={selectedRowKeys}
+                        groupList={groupList}
+                    />
                 </Col>
                 <Col span={14}>
+                    <Button icon="team" size="small" onClick={this.showAddToGroupModal} disabled={selectedRows.length === 0 || selectedRows.length > 1 ? true : false}>Add To Group</Button>
+                    <Divider type="vertical" />
                     <Button icon="edit" size="small" onClick={this.showUpdateModal} disabled={selectedRows.length === 0 || selectedRows.length > 1 ? true : false}>Edit</Button>
                     <Divider type="vertical" />
                     <Popconfirm title="Are you sure delete?" onConfirm={this.handleDelete} okText="Yes" cancelText="No">
