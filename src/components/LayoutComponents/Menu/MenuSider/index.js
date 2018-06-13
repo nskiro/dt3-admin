@@ -22,14 +22,14 @@ const menuData = [
     url: '/pages/menu-management',
     icon: 'icomn icmn-tree',
   },{
-    title: 'User & Group',
-    key: 'userManagement',
-    url: '/pages/user-management',
+    title: 'Role & Group',
+    key: 'roleGroup',
+    url: '/pages/role-group',
     icon: 'icomn icmn-users',
   },{
-    title: 'Role & Authorization',
-    key: 'userRole',
-    url: '/pages/authorization',
+    title: 'User & Authorization',
+    key: 'userAuth',
+    url: '/pages/user-authorization',
     icon: 'icomn icmn-lock',
   }
 ]

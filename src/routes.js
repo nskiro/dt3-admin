@@ -35,13 +35,13 @@ const loadableRoutes = {
   },
 
   //User Management Page
-  '/pages/user-management': {
-    component: loadable(() => import('pages/UserPage'))
+  '/pages/role-group': {
+    component: loadable(() => import('pages/RolePage'))
   },
 
   //Authorization Page
-  '/pages/authorization': {
-    component: loadable(() => import('pages/RolePage'))
+  '/pages/user-authorization': {
+    component: loadable(() => import('pages/UserPage'))
   }
 }
 
