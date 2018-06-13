@@ -12,8 +12,8 @@ const SubMenu = Menu.SubMenu
 const Divider = Menu.Divider
 const menuData = [
   {
-    title: 'Dashboard Alpha',
-    key: 'dashboardAlpha',
+    title: 'Dashboard',
+    key: 'dashboard',
     url: '/dashboard/alpha',
     icon: 'icomn icmn-home',
   },
@@ -33,6 +33,21 @@ const menuData = [
       {  key: 'role', title: 'Role', url: '/admin/roles',icon: 'icomn icmn-key2'},
       {  key: 'group', title: 'Group', url: '/admin/groups',icon: 'icmn-spoon-knife'},
     ]
+  },{
+    title: 'Menu Management',
+    key: 'menuManagement',
+    url: '/pages/menu-management',
+    icon: 'icomn icmn-tree',
+  },{
+    title: 'User & Group',
+    key: 'userManagement',
+    url: '/pages/user-management',
+    icon: 'icomn icmn-users',
+  },{
+    title: 'Role & Authorization',
+    key: 'userRole',
+    url: '/pages/authorization',
+    icon: 'icomn icmn-lock',
   }
 ]
 

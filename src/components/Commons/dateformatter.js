@@ -67,4 +67,4 @@ DateShortFormatter.defaultProps = {
   value: null,
 }
 
-export default { DateLongFormatter, DateShortFormatter,FormatDateLongType:formatDate_Longtype }
+export default { DateLongFormatter, DateShortFormatter, FormatDateLongType: formatDate_Longtype }

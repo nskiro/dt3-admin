@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Tabs, Form } from 'antd';
+import React, { Component } from 'react'
+import { Tabs, Form } from 'antd'
 import Page from 'components/LayoutComponents/Page'
 
 //
@@ -7,14 +7,15 @@ import Page from 'components/LayoutComponents/Page'
 //const AccessLinks= require('./accessLinks');
 
 class Role extends Component {
-    render() {
-        const props = this.props;
+  render() {
+    const props = this.props
 
-        return (<Page {...props}>
-            <div>CREATE Role</div>
-        </Page>);
-
-    }
+    return (
+      <Page {...props}>
+        <div>CREATE Role</div>
+      </Page>
+    )
+  }
 }
 
-export default Role;
+export default Role

@@ -41,11 +41,23 @@ const loadableRoutes = {
   '/pages/empty': { component: loadable(() => import('pages/DefaultPages/EmptyPage')),},
   '/admin/users': { component: loadable(() => import('pages/Managements/Users')),},
   '/admin/menus': { component: loadable(() => import('pages/Managements/Menus')),},
-
   //Profile Page
   '/pages/profile': { component: loadable(() => import('pages/Profile'))},
 
+  //Menu Management Page
+  '/pages/menu-management': {
+    component: loadable(() => import('pages/MenuPage'))
+  },
 
+  //User Management Page
+  '/pages/user-management': {
+    component: loadable(() => import('pages/UserPage'))
+  },
+
+  //Authorization Page
+  '/pages/authorization': {
+    component: loadable(() => import('pages/RolePage'))
+  }
 }
 
 

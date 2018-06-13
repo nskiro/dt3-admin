@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Tabs, Form } from 'antd';
+import React, { Component } from 'react'
+import { Tabs, Form } from 'antd'
 import Page from 'components/LayoutComponents/Page'
 
 //
@@ -7,13 +7,14 @@ import Page from 'components/LayoutComponents/Page'
 //const AccessLinks= require('./accessLinks');
 
 class Menu extends Component {
-    render() {
-        const props = this.props;
-        return (<Page {...props}>
-            <div>CREATE MENU MAIN</div>
-        </Page>);
-
-    }
+  render() {
+    const props = this.props
+    return (
+      <Page {...props}>
+        <div>CREATE MENU MAIN</div>
+      </Page>
+    )
+  }
 }
 
-export default Menu;
+export default Menu
