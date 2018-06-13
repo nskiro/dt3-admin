@@ -16,6 +16,23 @@ const menuData = [
     key: 'dashboard',
     url: '/dashboard/alpha',
     icon: 'icomn icmn-home',
+  },
+  {
+    title: 'Empty Page',
+    key: 'emptyPage',
+    url: '/pages/empty',
+    icon: 'icomn icmn-star-full',
+  },
+  {
+    title: 'Management',
+    key: 'management',
+    icon: 'icomn icmn-indent-increase',
+    children: [
+      {  key: 'user', title: 'User', url: '/admin/users', icon: 'icomn icmn-users'},
+      {  key: 'menu', title: 'Menu', url: '/admin/menus', icon: 'icmn-rocket'},
+      {  key: 'role', title: 'Role', url: '/admin/roles',icon: 'icomn icmn-key2'},
+      {  key: 'group', title: 'Group', url: '/admin/groups',icon: 'icmn-spoon-knife'},
+    ]
   },{
     title: 'Menu Management',
     key: 'menuManagement',
