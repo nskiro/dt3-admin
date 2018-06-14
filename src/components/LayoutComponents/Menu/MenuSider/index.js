@@ -28,27 +28,30 @@ const menuData = [
     key: 'management',
     icon: 'icomn icmn-indent-increase',
     children: [
-      {  key: 'user', title: 'User', url: '/admin/users', icon: 'icomn icmn-users'},
-      {  key: 'menu', title: 'Menu', url: '/admin/menus', icon: 'icmn-rocket'},
-      {  key: 'role', title: 'Role', url: '/admin/roles',icon: 'icomn icmn-key2'},
-      {  key: 'group', title: 'Group', url: '/admin/groups',icon: 'icmn-spoon-knife'},
-    ]
-  },{
+      { key: 'user', title: 'User', url: '/admin/users', icon: 'icomn icmn-users' },
+      { key: 'menu', title: 'Menu', url: '/admin/menus', icon: 'icmn-rocket' },
+      { key: 'role', title: 'Role', url: '/admin/roles', icon: 'icomn icmn-key2' },
+      { key: 'group', title: 'Group', url: '/admin/groups', icon: 'icmn-spoon-knife' },
+    ],
+  },
+  {
     title: 'Menu Management',
     key: 'menuManagement',
     url: '/pages/menu-management',
     icon: 'icomn icmn-tree',
-  },{
+  },
+  {
     title: 'User & Group',
     key: 'userManagement',
     url: '/pages/user-management',
     icon: 'icomn icmn-users',
-  },{
+  },
+  {
     title: 'Role & Authorization',
     key: 'userRole',
     url: '/pages/authorization',
     icon: 'icomn icmn-lock',
-  }
+  },
 ]
 
 const mapStateToProps = (state, props) => ({

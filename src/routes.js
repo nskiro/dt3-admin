@@ -21,7 +21,7 @@ const loadable = loader =>
     loader,
     delay: false,
     loading: () => null,
-  });
+  })
 
 /*
 const linkPages =[
@@ -34,32 +34,31 @@ const linkPages =[
 
 const loadableRoutes = {
   // Default Pages
-  '/login': { component: loadable(() => import('pages/DefaultPages/LoginPage')),},
+  '/login': { component: loadable(() => import('pages/DefaultPages/LoginPage')) },
   // Dashboards
-  '/dashboard/alpha': { component: loadable(() => import('pages/Dashboard/DashboardAlphaPage')), },
-  // Empty Page 
-  '/pages/empty': { component: loadable(() => import('pages/DefaultPages/EmptyPage')),},
-  '/admin/users': { component: loadable(() => import('pages/Managements/Users')),},
-  '/admin/menus': { component: loadable(() => import('pages/Managements/Menus')),},
+  '/dashboard/alpha': { component: loadable(() => import('pages/Dashboard/DashboardAlphaPage')) },
+  // Empty Page
+  '/pages/empty': { component: loadable(() => import('pages/DefaultPages/EmptyPage')) },
+  '/admin/users': { component: loadable(() => import('pages/Managements/Users')) },
+  '/admin/menus': { component: loadable(() => import('pages/Managements/Menus')) },
   //Profile Page
-  '/pages/profile': { component: loadable(() => import('pages/Profile'))},
+  //'/pages/profile': { component: loadable(() => import('pages/Profile')) },
 
   //Menu Management Page
   '/pages/menu-management': {
-    component: loadable(() => import('pages/MenuPage'))
+    component: loadable(() => import('pages/MenuPage')),
   },
 
   //User Management Page
   '/pages/user-management': {
-    component: loadable(() => import('pages/UserPage'))
+    component: loadable(() => import('pages/UserPage')),
   },
 
   //Authorization Page
   '/pages/authorization': {
-    component: loadable(() => import('pages/RolePage'))
-  }
+    component: loadable(() => import('pages/RolePage')),
+  },
 }
-
 
 class Routes extends React.Component {
   timeoutId = null
