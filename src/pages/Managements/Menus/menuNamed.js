@@ -30,7 +30,7 @@ class MenuEditForm extends Component {
       menu_data: [],
       menu_seleted: '',
       menu_parent_label: '',
-
+      menu_parent_id: this.props.data.menu_parent_id,
       expandedKeys: [],
       searchValue: '',
       autoExpandParent: true,
@@ -68,7 +68,7 @@ class MenuEditForm extends Component {
           console.log(menu_data)
           this.setState({ menu_data: menu_data })
         } else {
-          this.setState({ access_link_data: [] })
+          this.setState({ menu_data: [] })
           alert(rs.message)
         }
       })
@@ -100,12 +100,13 @@ class MenuEditForm extends Component {
   }
   onSelectTreeNode = (selectedKeys, info) => {
     // console.log('selected', selectedKeys, info);
-    this.setState({ menu_parent_label: info.node.props.dataRef.title })
+    this.setState({
+      menu_parent_label: info.node.props.dataRef.title,
+      menu_parent_id: info.node.props.dataRef.key,
+    })
     console.log(info.node.props)
   }
   onLoadData = treeNode => {
-    console.log(treeNode)
-
     return new Promise(resolve => {
       if (treeNode.props.children) {
         resolve()
@@ -116,21 +117,19 @@ class MenuEditForm extends Component {
         axios
           .get(menu_get_link, { params: { menu_parent: treeNode.props.eventKey } })
           .then(res => {
-            /*
-                        let rs = res.data;
-                        if (rs.valid) {
-                            let menu_data=[];
-                            for( let i=0;i<rs.data.length;i++){
-                                let item = rs.data[i];
-                                menu_data.push({title:item.menu_label, key:item._id});
-                            }
-                            console.log(menu_data);
-                            this.setState({ menu_data: menu_data });
-                        }
-                        else {
-                            this.setState({ access_link_data: [] });
-                            alert(rs.message);
-                        }*/
+            let rs = res.data
+            if (rs.valid) {
+              let menu_data = []
+              for (let i = 0; i < rs.data.length; i++) {
+                let item = rs.data[i]
+                menu_data.push({ title: item.menu_label, key: item._id })
+              }
+              console.log(menu_data)
+              this.setState({ menu_data: [...this.state.menu_data] })
+            } else {
+              this.setState({ menu_data: [] })
+              alert(rs.message)
+            }
           })
           .catch(err => {
             console.log(err)
@@ -143,7 +142,7 @@ class MenuEditForm extends Component {
                 this.setState({
                     menu_data: [...this.state.menu_data],
                 });
-                */
+            */
         resolve()
       }, 1000)
     })
@@ -181,6 +180,13 @@ class MenuEditForm extends Component {
                   )}
                 </FormItem>
               </Col>
+              <Col>
+                <FormItem>
+                  {getFieldDecorator('menu_parent', {
+                    initialValue: this.props.data.menu_parent_id,
+                  })(<Input name="menu_parent" style={{ display: 'none', visible: false }} />)}
+                </FormItem>
+              </Col>
             </Row>
             <Row className="show-grid">
               <Col md={6} sm={6} xs={6}>
@@ -190,7 +196,11 @@ class MenuEditForm extends Component {
                     { initialValue: this.props.data.menu_parent },
                     {},
                   )(
-                    <Tree loadData={this.onLoadData} onSelect={this.onSelectTreeNode}>
+                    <Tree
+                      name="menu_parent"
+                      loadData={this.onLoadData}
+                      onSelect={this.onSelectTreeNode}
+                    >
                       {this.renderTreeNodes(this.state.menu_data)}
                     </Tree>,
                   )}

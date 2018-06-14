@@ -28,11 +28,11 @@ const menuData = [
     key: 'management',
     icon: 'icomn icmn-indent-increase',
     children: [
-      {  key: 'user', title: 'User', url: '/admin/user-authorization', icon: 'icomn icmn-users'},
-      {  key: 'menu', title: 'Menu', url: '/admin/menus', icon: 'icmn-rocket'},
-      {  key: 'role', title: 'Role-Group', url: '/admin/role-group',icon: 'icomn icmn-key2'}
-    ]
-  }
+      { key: 'user', title: 'User', url: '/admin/user-authorization', icon: 'icomn icmn-users' },
+      { key: 'menu', title: 'Menu', url: '/admin/menus', icon: 'icmn-rocket' },
+      { key: 'role', title: 'Role-Group', url: '/admin/role-group', icon: 'icomn icmn-key2' },
+    ],
+  },
 ]
 
 const mapStateToProps = (state, props) => ({

@@ -21,7 +21,7 @@ const loadable = loader =>
     loader,
     delay: false,
     loading: () => null,
-  });
+  })
 
 /*
 const linkPages =[
@@ -34,24 +34,23 @@ const linkPages =[
 
 const loadableRoutes = {
   // Default Pages
-  '/login': { component: loadable(() => import('pages/DefaultPages/LoginPage')),},
+  '/login': { component: loadable(() => import('pages/DefaultPages/LoginPage')) },
   // Dashboards
-  '/dashboard/alpha': { component: loadable(() => import('pages/Dashboard/DashboardAlphaPage')), },
-  // Empty Page 
-  '/pages/empty': { component: loadable(() => import('pages/DefaultPages/EmptyPage')),},
-  '/admin/menus': { component: loadable(() => import('pages/Managements/Menus')),},
+  '/dashboard/alpha': { component: loadable(() => import('pages/Dashboard/DashboardAlphaPage')) },
+  // Empty Page
+  '/pages/empty': { component: loadable(() => import('pages/DefaultPages/EmptyPage')) },
+  '/admin/menus': { component: loadable(() => import('pages/Managements/Menus')) },
 
   //User Management Page
   '/admin/role-group': {
-    component: loadable(() => import('pages/Managements/RolePage'))
+    component: loadable(() => import('pages/Managements/RolePage')),
   },
 
   //Authorization Page
   '/admin/user-authorization': {
-    component: loadable(() => import('pages/Managements/UserPage'))
-  }
+    component: loadable(() => import('pages/Managements/UserPage')),
+  },
 }
-
 
 class Routes extends React.Component {
   timeoutId = null
