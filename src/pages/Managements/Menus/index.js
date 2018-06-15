@@ -1,68 +1,43 @@
-import React, { Component } from 'react'
-import { Tabs, Form, Table, Badge, Menu, Dropdown, Icon, Collapse } from 'antd'
+import React, { Component } from 'react';
+import { Tabs, Form, Table, Badge, Menu, Dropdown, Icon, Collapse } from 'antd';
+import Helmet from 'react-helmet';
 
-import Page from 'components/LayoutComponents/Page'
-import RowRenderer from '../../../components/Commons/rowrenderer'
-import DateFormatter from '../../../components/Commons/dateformatter'
+import Page from 'components/LayoutComponents/Page';
 
-import MenuNamed from './menuNamed'
-import AccessLinks from './accessLinks'
+import MenuNamed from './menuNamed';
+import AccessLinks from './accessLinks';
 
-const Panel = Collapse.Panel
-const { DateLongFormatter, DateShortFormatter } = DateFormatter
+const Panel = Collapse.Panel;
 
 class Menus extends Component {
-  constructor(props, context) {
-    super(props, context)
-    this.state = {
-      rows: [],
-      columns: [
-        { key: 'stt', name: 'STT', editable: false, resizable: true, width: 100 },
-        { key: 'username', name: 'USERNAME', editable: false, resizable: true, width: 200 },
-        { key: 'fullname', name: 'FULLNNAME', editable: false, resizable: true, width: 200 },
-        {
-          key: 'last_login',
-          name: 'LAST LOGIN',
-          editable: false,
-          resizable: true,
-          width: 200,
-          formatter: DateLongFormatter,
-        },
-        {
-          key: 'create_date',
-          name: 'CREATE DATE',
-          editable: false,
-          resizable: true,
-          formatter: DateLongFormatter,
-        },
-        {
-          key: 'update_date',
-          name: 'UPDATE DATE',
-          editable: false,
-          resizable: true,
-          formatter: DateLongFormatter,
-        },
-        { key: 'record_status', name: 'STATUS', editable: false, resizable: true },
-      ],
-    }
-  }
   render() {
-    const props = this.props
-    const WapperAccessLinkForm = Form.create()(AccessLinks)
-    const WapperMenusForm = Form.create()(MenuNamed)
+    const props = this.props;
+    const WapperAccessLinkForm = Form.create()(AccessLinks);
+    const WapperMenusForm = Form.create()(MenuNamed);
     return (
       <Page {...props}>
-        <Collapse accordion>
-          <Panel header="ACCESS LINK" key="1">
-            <WapperAccessLinkForm />
-          </Panel>
-          <Panel header="MENU" key="2">
-            <WapperMenusForm />
-          </Panel>
-        </Collapse>
+        <Helmet title="Management Menus  &amp; Links" />
+        <section className="card">
+          <div className="card-header">
+            <h5 className="mb-0 mr-3 d-inline-block text-black">
+              <strong>Menus&amp; Links </strong>
+            </h5>
+          </div>
+          <div className="card-body">
+            <Collapse accordion>
+              <Panel header="Access Link" key="1">
+                <WapperAccessLinkForm />
+              </Panel>
+              <Panel header="Menu" key="2">
+                <WapperMenusForm />
+              </Panel>
+            </Collapse>
+          </div>
+        </section>
+
       </Page>
     )
   }
 }
 
-export default Menus
+export default Menus;
