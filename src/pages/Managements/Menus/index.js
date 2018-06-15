@@ -1,19 +1,19 @@
-import React, { Component } from 'react';
-import { Tabs, Form, Table, Badge, Menu, Dropdown, Icon, Collapse } from 'antd';
-import Helmet from 'react-helmet';
+import React, { Component } from 'react'
+import { Tabs, Form } from 'antd'
+import Helmet from 'react-helmet'
 
-import Page from 'components/LayoutComponents/Page';
+import Page from 'components/LayoutComponents/Page'
 
-import MenuNamed from './menuNamed';
-import AccessLinks from './accessLinks';
+import MenuNamed from './menuNamed'
+import AccessLinks from './accessLinks'
 
-const Panel = Collapse.Panel;
+const TabPane = Tabs.TabPane;
 
 class Menus extends Component {
   render() {
-    const props = this.props;
-    const WapperAccessLinkForm = Form.create()(AccessLinks);
-    const WapperMenusForm = Form.create()(MenuNamed);
+    const props = this.props
+    const WapperAccessLinkForm = Form.create()(AccessLinks)
+    const WapperMenusForm = Form.create()(MenuNamed)
     return (
       <Page {...props}>
         <Helmet title="Management Menus  &amp; Links" />
@@ -24,20 +24,15 @@ class Menus extends Component {
             </h5>
           </div>
           <div className="card-body">
-            <Collapse accordion>
-              <Panel header="Access Link" key="1">
-                <WapperAccessLinkForm />
-              </Panel>
-              <Panel header="Menu" key="2">
-                <WapperMenusForm />
-              </Panel>
-            </Collapse>
+            <Tabs>
+              <TabPane tab="Access Link" key="1">  <WapperAccessLinkForm /></TabPane>
+              <TabPane tab="Menus" key="2"><WapperMenusForm /></TabPane>
+            </Tabs>
           </div>
         </section>
-
       </Page>
     )
   }
 }
 
-export default Menus;
+export default Menus
