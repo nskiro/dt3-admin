@@ -14,11 +14,14 @@ const { TextArea } = Input
 const Option = Select.Option
 const TreeNode = Tree.TreeNode
 
-const ac_get_link = 'api/admin/accesslink/get'
-const menu_get_link = 'api/admin/menu/get'
+const ac_get_link = 'api/admin/accesslink/get';
 
-const menu_add_link = 'api/admin/menu/add'
-const menu_update_link = 'api/admin/menu/update'
+const menu_getroot_link = 'api/admin/menu/getroot';
+const menu_get_link = 'api/admin/menu/get';
+const menu_getwithlabels_link = 'api/admin/menu/getwithlabels';
+const menu_add_link = 'api/admin/menu/add';
+const menu_update_link = 'api/admin/menu/update';
+
 
 class MenuEditForm extends Component {
   constructor(props, context) {
@@ -56,34 +59,35 @@ class MenuEditForm extends Component {
 
   loadMenus = v => {
     axios
-      .get(menu_get_link, { params: v })
+      .get(menu_getroot_link, { params: v })
       .then(res => {
-        let rs = res.data
+        let rs = res.data;
         if (rs.valid) {
-          let menu_data = []
+          let menu_data = [];
+          let expandedKeys = [];
           for (let i = 0; i < rs.data.length; i++) {
-            let item = rs.data[i]
-            menu_data.push({ title: item.menu_label, key: item._id })
+            let item = rs.data[i];
+            menu_data.push({ title: item.menu_label, key: item._id });
+            expandedKeys.push(item._id);
           }
-          console.log(menu_data)
-          this.setState({ menu_data: menu_data })
+          this.setState({ menu_data: menu_data, expandedKeys: expandedKeys });
         } else {
-          this.setState({ menu_data: [] })
-          alert(rs.message)
+          this.setState({ menu_data: [], expandedKeys: [] });
+          alert(rs.message);
         }
       })
       .catch(err => {
-        console.log(err)
+        console.log(err);
       })
   }
 
   componentDidMount = () => {
-    this.onLoadAccessLinks({})
-    this.loadMenus({})
+    this.onLoadAccessLinks({});
+    this.loadMenus({});
   }
   handleChange = value => {
-    console.log(value)
-    this.setState({ access_link_selected: value })
+    console.log(value);
+    this.setState({ access_link_selected: value });
   }
 
   renderTreeNodes = data => {
@@ -99,61 +103,56 @@ class MenuEditForm extends Component {
     })
   }
   onSelectTreeNode = (selectedKeys, info) => {
-    // console.log('selected', selectedKeys, info);
+    // console.log('selected', info.node.props.dataRef.key);
     this.setState({
       menu_parent_label: info.node.props.dataRef.title,
       menu_parent_id: info.node.props.dataRef.key,
-    })
-    console.log(info.node.props)
+    });
   }
+
   onLoadData = treeNode => {
     return new Promise(resolve => {
       if (treeNode.props.children) {
-        resolve()
-        return
+        resolve();
+        return;
       }
       setTimeout(() => {
-        //console.log(treeNode.props.eventKey);
         axios
           .get(menu_get_link, { params: { menu_parent: treeNode.props.eventKey } })
           .then(res => {
-            let rs = res.data
+            let rs = res.data;
             if (rs.valid) {
-              let menu_data = []
+              let menu_data = [];
+              let expandedKeys = this.state.expandedKeys;
+              expandedKeys.push(treeNode.props.eventKey);
+
               for (let i = 0; i < rs.data.length; i++) {
-                let item = rs.data[i]
-                menu_data.push({ title: item.menu_label, key: item._id })
+                let item = rs.data[i];
+                menu_data.push({ title: item.menu_label, key: item._id });
+
               }
-              console.log(menu_data)
-              this.setState({ menu_data: [...this.state.menu_data] })
+              treeNode.props.dataRef.children = menu_data;
+              console.log(menu_data);
+              this.setState({ menu_data: [...this.state.menu_data], expandedKeys: expandedKeys });
             } else {
-              this.setState({ menu_data: [] })
-              alert(rs.message)
+              this.setState({ menu_data: [] });
+              alert(rs.message);
             }
           })
           .catch(err => {
-            console.log(err)
+            console.log(err);
           })
-        /*
-                treeNode.props.dataRef.children = [
-                    { title: 'Child Node', key: `${treeNode.props.eventKey}-0` },
-                    { title: 'Child Node', key: `${treeNode.props.eventKey}-1` },
-                ];
-                this.setState({
-                    menu_data: [...this.state.menu_data],
-                });
-            */
         resolve()
       }, 1000)
     })
   }
   render() {
-    const { visible, onCancel, onCreate, form } = this.props
-    const { getFieldDecorator } = form
+    const { visible, onCancel, onCreate, form } = this.props;
+    const { getFieldDecorator } = form;
 
-    const { searchValue, expandedKeys, autoExpandParent } = this.state
+    const { searchValue, expandedKeys, autoExpandParent } = this.state;
 
-    const options = this.state.access_link_data.map(d => <Option value={d._id}>{d.name}</Option>)
+    const options = this.state.access_link_data.map(d => <Option value={d._id}>{d.name}</Option>);
     return (
       <Modal
         title="Menu Item Information"
@@ -182,9 +181,9 @@ class MenuEditForm extends Component {
               </Col>
               <Col>
                 <FormItem>
-                  {getFieldDecorator('menu_parent', {
-                    initialValue: this.props.data.menu_parent_id,
-                  })(<Input name="menu_parent" style={{ display: 'none', visible: false }} />)}
+                  {getFieldDecorator('menu_parent_id', {
+                    initialValue: this.state.menu_parent_id,
+                  })(<Input name="menu_parent_id" style={{ display: 'none', visible: false }} />)}
                 </FormItem>
               </Col>
             </Row>
@@ -200,6 +199,8 @@ class MenuEditForm extends Component {
                       name="menu_parent"
                       loadData={this.onLoadData}
                       onSelect={this.onSelectTreeNode}
+                    // expandedKeys={expandedKeys}
+                    // autoExpandParent={autoExpandParent}
                     >
                       {this.renderTreeNodes(this.state.menu_data)}
                     </Tree>,
@@ -264,8 +265,37 @@ class MenuNamed extends Component {
     super(props, context)
     this.state = {
       rows: [],
-      columns: [],
-      button_size: 'default',
+      columns: [
+        { title: 'NAME', dataIndex: 'menu_label', key: 'menu_label' },
+        { title: 'PARENT', dataIndex: 'menu_parent_label', key: 'menu_parent_label' },
+        { title: 'ACCESS LINK', dataIndex: 'access_link_name', key: 'access_link_name' },
+        {
+          title: 'CREATE DATE', dataIndex: 'create_date', key: 'create_date',
+          render: (text, row) => (
+            <span>
+              {text === null ? '' : moment(new Date(text)).format('MM/DD/YYYY HH:mm:ss')}
+            </span>)
+
+        },
+        {
+          title: 'UPDATE DATE', dataIndex: 'update_date', key: 'update_date',
+          render: (text, row) => (
+            <span>
+              {text === null ? '' : moment(new Date(text)).format('MM/DD/YYYY HH:mm:ss')}
+            </span>)
+        },
+        {
+          title: 'STATUS',
+          dataIndex: 'record_status',
+          key: 'record_status',
+          render: (text, row) => (
+            <span>
+              {text === 'O' ? 'Đang hoạt động' : 'Ngưng hoạt động'}
+            </span>)
+
+        },
+      ],
+      button_size: 'small',
       menu_selected: {},
       modalvisible: false,
     }
@@ -280,6 +310,24 @@ class MenuNamed extends Component {
     this.setState({ modalvisible: false })
   }
 
+  onHandleLoadMenus = () => {
+    axios
+      .get(menu_getwithlabels_link, { params: {} })
+      .then(res => {
+        let rs = res.data;
+        console.log(rs);
+        if (rs.valid) {
+          this.setState({ rows: rs.data });
+        } else {
+          this.setState({ rows: [] })
+          alert(rs.message)
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
   onHandleCreateMenu = e => {
     const form = this.formRef.props.form
     form.validateFields((err, values) => {
@@ -287,9 +335,16 @@ class MenuNamed extends Component {
       let data = {
         _id: values.id,
         menu_label: values.menu_label,
-        menu_parent: values.menu_parent,
+        menu_parent: values.menu_parent_id,
         access_link: values.access_link,
       }
+
+      if (values.menu_parent_label !== undefined) {
+        if (values.menu_parent_label.length === 0) {
+          delete data.menu_parent;
+        }
+      }
+
       console.log(data)
       if (values.id) {
         console.log('call update')
@@ -305,7 +360,7 @@ class MenuNamed extends Component {
                         } else {
                             alert(rs.message);
                         }
-
+  
                     })
                     .catch((err) => {
                         console.log(err);
@@ -313,16 +368,15 @@ class MenuNamed extends Component {
                     */
       } else {
         console.log('call add')
-
         axios
           .post(menu_add_link, data)
           .then(res => {
             console.log(res.data)
-            let rows = this.state.rows
+            let rows = this.state.rows;
             // rows.push(res.data);
             // this.setState({ rows: rows });
-            form.resetFields()
-            this.setState({ modalvisible: false })
+            form.resetFields();
+            this.setState({ modalvisible: false });
           })
           .catch(err => {
             console.log(err)
@@ -331,15 +385,18 @@ class MenuNamed extends Component {
     })
   }
 
+  componentDidMount = () => {
+    this.onHandleLoadMenus();
+  }
   render() {
-    const { getFieldDecorator } = this.props.form
-    const { button_size } = this.state
-    const WapperMenuEditForm = Form.create()(MenuEditForm)
+    const { getFieldDecorator } = this.props.form;
+    const { button_size } = this.state;
+    const WapperMenuEditForm = Form.create()(MenuEditForm);
     return (
       <div>
         <div>
-          <Button value="new" size={button_size} onClick={this.onShowEditForm}>
-            NEW
+          <Button type="primary" icon="plus-circle" value="new" size={button_size} onClick={this.onShowEditForm}>
+            new
           </Button>
           <Button value="edit" size={button_size} onClick={this.onShowEditForm}>
             EDIT
@@ -354,17 +411,20 @@ class MenuNamed extends Component {
 
         <Table
           rowKey={record => record._id}
-          className="components-table-demo-nested"
+          size='small'
+          bordered
+          style={{ marginTop: '5px' }}
+
           columns={this.state.columns}
           dataSource={this.state.rows}
-          pagination={{ pageSize: 50 }}
+          pagination={{ pageSize: 10 }}
           scroll={{ y: 240 }}
           onRow={record => {
             return {
               onClick: () => {
                 this.setState({ menu_selected: record })
               }, // click row
-              onMouseEnter: () => {}, // mouse enter row
+              onMouseEnter: () => { }, // mouse enter row
             }
           }}
         />
