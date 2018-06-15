@@ -219,6 +219,8 @@ class RoleForm extends Component {
             columns={columns}
             dataSource={roleList}
             rowSelection={this.rowSelection}
+            size="small"
+            bordered
           />
         </Col>
       </Row>

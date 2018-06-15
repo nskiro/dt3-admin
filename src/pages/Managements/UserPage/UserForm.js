@@ -225,7 +225,7 @@ class AddToRoleForm extends Component {
         const userRole = data.length > 0 ? data[0].role.map((obj) => obj._id) : [];
         return (
             <Modal
-                title="Add User To Group"
+                title="Add Role for User"
                 visible={this.props.visible}
                 onOk={this.props.onOk}
                 onCancel={this.props.onCancel}
