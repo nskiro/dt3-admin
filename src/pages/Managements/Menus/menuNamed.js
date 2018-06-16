@@ -1,19 +1,19 @@
 import React, { Component } from 'react'
 import { Grid, Row, Col } from 'react-bootstrap'
 
-import { Tabs, Tree, Form, Button, Input, Divider, Popconfirm, Table, Modal, Select } from 'antd'
+import { Tabs, Tree, Form, Button, Input, Divider, Popconfirm, Table, Modal, Select } from 'antd';
 
-import PropTypes from 'prop-types'
-import moment from 'moment'
+import PropTypes from 'prop-types';
+import moment from 'moment';
 
-import ReactDataGrid from 'react-data-grid'
-import axios from '../../../axiosInst'
-const _ = require('lodash')
+import ReactDataGrid from 'react-data-grid';
+import axios from '../../../axiosInst';
+const _ = require('lodash');
 
-const FormItem = Form.Item
-const { TextArea } = Input
-const Option = Select.Option
-const TreeNode = Tree.TreeNode
+const FormItem = Form.Item;
+const { TextArea } = Input;
+const Option = Select.Option;
+const TreeNode = Tree.TreeNode;
 
 const ac_get_link = 'api/admin/accesslink/get'
 
@@ -85,19 +85,13 @@ class MenuEditForm extends Component {
       })
   }
 
-  /*
-  componentDidMount = () => {
-    this.onLoadAccessLinks({})
-    this.loadMenus({})
-  }
-  */
   componentWillMount = () => {
-    this.onLoadAccessLinks({})
-    this.loadMenus({})
+    this.onLoadAccessLinks({record_status:'O'});
+    this.loadMenus({});
   }
   handleChange = value => {
     console.log(value)
-    this.setState({ access_link_selected: value })
+    this.setState({ access_link_selected: value });
   }
 
   renderTreeNodes = data => {
@@ -117,40 +111,35 @@ class MenuEditForm extends Component {
     let data_ref = this.state.data_ref
     data_ref.menu_parent_label = info.node.props.dataRef.title
     data_ref.menu_parent_id = info.node.props.dataRef.key
-    this.setState({ data_ref: data_ref })
-    /*
-    this.setState({
-      menu_parent_label: info.node.props.dataRef.title,
-      menu_parent_id: info.node.props.dataRef.key,
-    })*/
+    this.setState({ data_ref: data_ref });
   }
 
   onLoadData = treeNode => {
     return new Promise(resolve => {
       if (treeNode.props.children) {
-        resolve()
+        resolve();
         return
       }
       setTimeout(() => {
         axios
           .get(menu_get_link, { params: { menu_parent: treeNode.props.eventKey } })
           .then(res => {
-            let rs = res.data
+            let rs = res.data;
             if (rs.valid) {
               let menu_data = []
-              let expandedKeys = this.state.expandedKeys
-              expandedKeys.push(treeNode.props.eventKey)
+              let expandedKeys = this.state.expandedKeys;
+              expandedKeys.push(treeNode.props.eventKey);
 
               for (let i = 0; i < rs.data.length; i++) {
-                let item = rs.data[i]
-                menu_data.push({ title: item.menu_label, key: item._id })
+                let item = rs.data[i];
+                menu_data.push({ title: item.menu_label, key: item._id });
               }
-              treeNode.props.dataRef.children = menu_data
-              console.log(menu_data)
-              this.setState({ menu_data: [...this.state.menu_data], expandedKeys: expandedKeys })
+              treeNode.props.dataRef.children = menu_data;
+              console.log(menu_data);
+              this.setState({ menu_data: [...this.state.menu_data], expandedKeys: expandedKeys });
             } else {
-              this.setState({ menu_data: [] })
-              alert(rs.message)
+              this.setState({ menu_data: [] });
+              alert(rs.message);
             }
           })
           .catch(err => {
@@ -378,17 +367,17 @@ class MenuNamed extends Component {
         axios
           .post(menu_add_link, data)
           .then(res => {
-            let rs = res.data
+            let rs = res.data;
             if (rs.valid) {
-              form.resetFields()
-              this.setState({ modalvisible: false })
-              this.onHandleLoadMenus()
+              form.resetFields();
+              this.setState({ modalvisible: false });
+              this.onHandleLoadMenus();
             } else {
-              alert(rs.message)
+              alert(rs.message);
             }
           })
           .catch(err => {
-            console.log(err)
+            console.log(err);
           })
       }
     })
@@ -397,30 +386,30 @@ class MenuNamed extends Component {
   onEnableMenu = e => {
     let data = this.state.menu_selected
     if (_.isEmpty(data)) {
-      alert('no menu selected')
-      return
+      alert('no menu selected');
+      return;
     }
-    let id = data._id
+    let id = data._id;
     axios
       .post(menu_enable_link + `${id}`, data)
       .then(res => {
-        let rs = res.data
+        let rs = res.data;
         if (rs.valid) {
-          this.onHandleLoadMenus()
+          this.onHandleLoadMenus();
         } else {
-          alert(rs.message)
+          alert(rs.message);
         }
       })
       .catch(err => {
-        console.log(err)
+        console.log(err);
       })
   }
 
   onDisableMenu = e => {
-    let data = this.state.menu_selected
+    let data = this.state.menu_selected;
     if (_.isEmpty(data)) {
-      alert('no menu selected')
-      return
+      alert('no menu selected');
+      return;
     }
     let id = data._id
     console.log(JSON.stringify(data))
