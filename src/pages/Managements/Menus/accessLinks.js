@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
-import { Grid, Row, Col } from 'react-bootstrap';
+import React, { Component } from 'react'
+import { Grid, Row, Col } from 'react-bootstrap'
 
-import { Tabs, Table, Form, Button, Input, Divider, Popconfirm, Modal } from 'antd';
-import moment from 'moment';
+import { Tabs, Table, Form, Button, Input, Divider, Popconfirm, Modal } from 'antd'
+import moment from 'moment'
 
-import axios from '../../../axiosInst';
+import axios from '../../../axiosInst'
 
-import PropTypes from 'prop-types';
-import DateFormatter from '../../../components/Commons/dateformatter';
+import PropTypes from 'prop-types'
+import DateFormatter from '../../../components/Commons/dateformatter'
 
-const _ = require('lodash');
+const _ = require('lodash')
 
 const FormItem = Form.Item
 const { TextArea } = Input
@@ -175,35 +175,35 @@ class AccessLinks extends Component {
         }
         console.log(data)
         if (values.id) {
-          console.log('call update');
+          console.log('call update')
           axios
             .post(ac_update_link + `${values.id}`, data)
             .then(res => {
-              let rs = res.data;
+              let rs = res.data
               if (rs.valid) {
-                form.resetFields();
-                this.setState({ modalvisible: false });
+                form.resetFields()
+                this.setState({ modalvisible: false })
               } else {
-                alert(rs.message);
+                alert(rs.message)
               }
             })
             .catch(err => {
-              console.log(err);
+              console.log(err)
             })
         } else {
           console.log('call add')
           axios
             .post(ac_add_link, data)
             .then(res => {
-              console.log(res.data);
-              let rows = this.state.rows;
-              rows.push(res.data);
-              this.setState({ rows: rows });
-              form.resetFields();
-              this.setState({ modalvisible: false });
+              console.log(res.data)
+              let rows = this.state.rows
+              rows.push(res.data)
+              this.setState({ rows: rows })
+              form.resetFields()
+              this.setState({ modalvisible: false })
             })
             .catch(err => {
-              console.log(err);
+              console.log(err)
             })
         }
       }
@@ -219,52 +219,52 @@ class AccessLinks extends Component {
   }
 
   onEnableLink = e => {
-    console.log('onEnableMenu');
-    let data = this.state.access_link_selected;
+    console.log('onEnableMenu')
+    let data = this.state.access_link_selected
     if (_.isEmpty(data)) {
-      alert('no access link selected');
-      return;
+      alert('no access link selected')
+      return
     }
     axios
       .post(ac_enable_link + `${data._id}`, data)
       .then(res => {
-        let rs = res.data;
+        let rs = res.data
         if (rs.valid) {
-          this.onHandleRefesh();
+          this.onHandleRefesh()
         } else {
-          alert(rs.message);
+          alert(rs.message)
         }
       })
       .catch(err => {
-        console.log(err);
+        console.log(err)
       })
   }
 
   onDisableLink = e => {
-    console.log('onDisableMenu');
-    let data = this.state.access_link_selected;
+    console.log('onDisableMenu')
+    let data = this.state.access_link_selected
     if (_.isEmpty(data)) {
-      alert('no access link  selected');
-      return;
+      alert('no access link  selected')
+      return
     }
     axios
       .post(ac_disable_link + `${data._id}`, data)
       .then(res => {
-        let rs = res.data;
+        let rs = res.data
         if (rs.valid) {
-          this.onHandleRefesh();
+          this.onHandleRefesh()
         } else {
-          alert(rs.message);
+          alert(rs.message)
         }
       })
       .catch(err => {
-        console.log(err);
+        console.log(err)
       })
   }
 
   onToggleShowSearchPanel = () => {
-    const { expand_search } = this.state;
-    this.setState({ expand_search: !expand_search });
+    const { expand_search } = this.state
+    this.setState({ expand_search: !expand_search })
   }
 
   onRowSelected = e => {
@@ -275,8 +275,8 @@ class AccessLinks extends Component {
     this.onHandleSearch({})
   }
   render() {
-    const { button_size } = this.state;
-    const WrappedAccessLinkEditForm = Form.create()(AccessLinkEditForm);
+    const { button_size } = this.state
+    const WrappedAccessLinkEditForm = Form.create()(AccessLinkEditForm)
 
     return (
       <div>
@@ -320,9 +320,9 @@ class AccessLinks extends Component {
           onRow={record => {
             return {
               onClick: () => {
-                this.setState({ access_link_selected: record });
+                this.setState({ access_link_selected: record })
               }, // click row
-              onMouseEnter: () => { }, // mouse enter row
+              onMouseEnter: () => {}, // mouse enter row
             }
           }}
         />
