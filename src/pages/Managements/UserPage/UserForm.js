@@ -68,6 +68,7 @@ class AddUserForm extends Component {
                 visible={this.props.visible}
                 onOk={this.props.onOk}
                 onCancel={this.props.onCancel}
+                destroyOnClose
             >
                 <Form layout="horizontal">
                     <FormItem
@@ -126,6 +127,7 @@ class UpdateUserForm extends Component {
                 visible={this.props.visible}
                 onOk={this.props.onOk}
                 onCancel={this.props.onCancel}
+                destroyOnClose
             >
                 <Form layout="horizontal">
                     <FormItem>
@@ -194,6 +196,7 @@ class AddToGroupForm extends Component {
                 visible={this.props.visible}
                 onOk={this.props.onOk}
                 onCancel={this.props.onCancel}
+                destroyOnClose
             >
                 <Form onSubmit={this.props.handleSubmit} layout="horizontal">
                     <FormItem>
@@ -229,6 +232,7 @@ class AddToRoleForm extends Component {
                 visible={this.props.visible}
                 onOk={this.props.onOk}
                 onCancel={this.props.onCancel}
+                destroyOnClose
             >
                 <Form onSubmit={this.props.handleSubmit} layout="horizontal">
                     <FormItem>
