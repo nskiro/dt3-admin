@@ -21,8 +21,8 @@ const ac_disable_link = 'api/admin/accesslink/disable/'
 
 class AccessLinkEditForm extends Component {
   render() {
-    const { getFieldDecorator } = this.props.form;
-    const { data } = this.props;
+    const { getFieldDecorator } = this.props.form
+    const { data } = this.props
     return (
       <Modal
         title={data._id ? 'Edit access link' : 'Create new access link'}
@@ -53,10 +53,8 @@ class AccessLinkEditForm extends Component {
                 <FormItem label={'Access link name'}>
                   {getFieldDecorator('name', {
                     rules: [{ required: true, message: 'Please input access link name!' }],
-                    initialValue: data.name
-                  })(
-                    <Input placeholder="access link name" />,
-                  )}
+                    initialValue: data.name,
+                  })(<Input placeholder="access link name" />)}
                 </FormItem>
               </Col>
             </Row>
@@ -92,12 +90,15 @@ class AccessLinks extends Component {
       columns: [
         { title: 'NAME', dataIndex: 'name' },
         {
-          title: 'CREATE DATE', dataIndex: 'create_date', render: (text, row) => (
+          title: 'CREATE DATE',
+          dataIndex: 'create_date',
+          render: (text, row) => (
             <span>{text === null ? '' : moment(new Date(text)).format('MM/DD/YYYY HH:mm:ss')}</span>
           ),
         },
         {
-          title: 'UPDATE DATE', dataIndex: 'update_date',
+          title: 'UPDATE DATE',
+          dataIndex: 'update_date',
           render: (text, row) => (
             <span>{text === null ? '' : moment(new Date(text)).format('MM/DD/YYYY HH:mm:ss')}</span>
           ),
@@ -134,9 +135,9 @@ class AccessLinks extends Component {
 
   onShowEditForm = e => {
     if (e.target.value === 'new') {
-      this.setState({ access_link_selected: {} });
+      this.setState({ access_link_selected: {} })
     }
-    this.setState({ modalvisible: true });
+    this.setState({ modalvisible: true })
   }
 
   onHandleSearch = v => {
@@ -147,37 +148,37 @@ class AccessLinks extends Component {
         .then(res => {
           let rs = res.data
           if (rs.valid) {
-            this.setState({ rows: rs.data });
+            this.setState({ rows: rs.data })
           } else {
-            this.setState({ rows: [] });
-            alert(rs.message);
+            this.setState({ rows: [] })
+            alert(rs.message)
           }
         })
         .catch(err => {
-          console.log(err);
+          console.log(err)
         })
     })
   }
 
   onHandleCreateMenu = e => {
-    const form = this.formRef.props.form;
+    const form = this.formRef.props.form
     form.validateFields((err, values) => {
       if (!err) {
-        console.log(values);
+        console.log(values)
         let data = {
           id: values.id,
           v: values.v,
           name: values.name,
           des: values.des,
         }
-        console.log(data);
+        console.log(data)
         if (values.id) {
-          console.log('call update');
+          console.log('call update')
           axios
             .post(ac_update_link + `${values.id}`, data)
             .then(res => {
-              console.log(res.data);
-              let rs = res.data;
+              console.log(res.data)
+              let rs = res.data
               if (rs.valid) {
                 form.resetFields()
                 this.setState({ modalvisible: false })
@@ -189,19 +190,19 @@ class AccessLinks extends Component {
               console.log(err)
             })
         } else {
-          console.log('call add');
+          console.log('call add')
           axios
             .post(ac_add_link, data)
             .then(res => {
-              console.log(res.data);
-              let rows = this.state.rows;
-              rows.push(res.data);
-              this.setState({ rows: rows });
-              form.resetFields();
-              this.setState({ modalvisible: false });
+              console.log(res.data)
+              let rows = this.state.rows
+              rows.push(res.data)
+              this.setState({ rows: rows })
+              form.resetFields()
+              this.setState({ modalvisible: false })
             })
             .catch(err => {
-              console.log(err);
+              console.log(err)
             })
         }
       }
@@ -209,62 +210,82 @@ class AccessLinks extends Component {
   }
 
   componentDidMount = () => {
-    this.onHandleSearch({});
+    this.onHandleSearch({})
   }
 
   onhandleCancel = e => {
-    this.setState({ modalvisible: false });
+    this.setState({ modalvisible: false })
   }
 
   onEnableLink = e => {
-    console.log('onEnableMenu');
+    console.log('onEnableMenu')
   }
 
   onDisableLink = e => {
-    console.log('onDisableMenu');
+    console.log('onDisableMenu')
   }
 
   onToggleShowSearchPanel = () => {
-    const { expand_search } = this.state;
-    this.setState({ expand_search: !expand_search });
+    const { expand_search } = this.state
+    this.setState({ expand_search: !expand_search })
   }
 
   onRowSelected = e => {
-    console.log(e);
+    console.log(e)
   }
 
-  onHandleRefesh = (e) => {
-    this.onHandleSearch({});
+  onHandleRefesh = e => {
+    this.onHandleSearch({})
   }
   render() {
     const { button_size } = this.state
-    const WrappedAccessLinkEditForm = Form.create()(AccessLinkEditForm);
+    const WrappedAccessLinkEditForm = Form.create()(AccessLinkEditForm)
 
     return (
       <div>
         <div>
-          <Button type="primary" icon="plus-circle" value="new" size={button_size} onClick={this.onShowEditForm}>new </Button>
+          <Button
+            type="primary"
+            icon="plus-circle"
+            value="new"
+            size={button_size}
+            onClick={this.onShowEditForm}
+          >
+            new{' '}
+          </Button>
           <Divider type="vertical" />
-          <Button icon="edit" value="edit" size={button_size} onClick={this.onShowEditForm}>edit</Button>
+          <Button icon="edit" value="edit" size={button_size} onClick={this.onShowEditForm}>
+            edit
+          </Button>
           <Divider type="vertical" />
-          <Button icon="check-circle" size={button_size} onClick={this.onEnableLink}> enable</Button>
+          <Button icon="check-circle" size={button_size} onClick={this.onEnableLink}>
+            {' '}
+            enable
+          </Button>
           <Divider type="vertical" />
-          <Button icon="close-circle" size={button_size} onClick={this.onDisableLink}>disable</Button>
+          <Button icon="close-circle" size={button_size} onClick={this.onDisableLink}>
+            disable
+          </Button>
           <Divider type="vertical" />
-          <Button icon="retweet" size={button_size} onClick={this.onHandleRefesh}> refesh </Button>
-
+          <Button icon="retweet" size={button_size} onClick={this.onHandleRefesh}>
+            {' '}
+            refesh{' '}
+          </Button>
         </div>
 
         <Table
-          rowKey={record => record._id} size="small" bordered style={{ marginTop: '5px' }}
+          rowKey={record => record._id}
+          size="small"
+          bordered
+          style={{ marginTop: '5px' }}
           columns={this.state.columns}
           dataSource={this.state.rows}
           onRow={record => {
             return {
               onClick: () => {
-                this.setState({ access_link_selected: record });
+                this.setState({ access_link_selected: record })
               }, // click row
-              onMouseEnter: () => { }, // mouse enter row
+              onMouseEnter: () => {}, // mouse enter row
             }
           }}
         />

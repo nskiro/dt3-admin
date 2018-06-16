@@ -7,7 +7,7 @@ import Page from 'components/LayoutComponents/Page'
 import MenuNamed from './menuNamed'
 import AccessLinks from './accessLinks'
 
-const TabPane = Tabs.TabPane;
+const TabPane = Tabs.TabPane
 
 class Menus extends Component {
   render() {
@@ -25,8 +25,13 @@ class Menus extends Component {
           </div>
           <div className="card-body">
             <Tabs>
-              <TabPane tab="Access Link" key="1">  <WapperAccessLinkForm /></TabPane>
-              <TabPane tab="Menus" key="2"><WapperMenusForm /></TabPane>
+              <TabPane tab="Access Link" key="1">
+                {' '}
+                <WapperAccessLinkForm />
+              </TabPane>
+              <TabPane tab="Menus" key="2">
+                <WapperMenusForm />
+              </TabPane>
             </Tabs>
           </div>
         </section>
