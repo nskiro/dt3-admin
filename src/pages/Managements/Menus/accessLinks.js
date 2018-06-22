@@ -62,6 +62,16 @@ class AccessLinkEditForm extends Component {
             </Row>
             <Row className="show-grid">
               <Col md={12} sm={12} xs={12}>
+                <FormItem label={'Component path'}>
+                  { getFieldDecorator('com_view', {
+                    rules: [{ required: true, message: 'Please input Component path!' }],
+                    initialValue: data.com_view,
+                  })(<Input placeholder="Component view path" />)}
+                </FormItem>
+              </Col>
+            </Row>
+            <Row className="show-grid">
+              <Col md={12} sm={12} xs={12}>
                 <FormItem label={'Access link description'}>
                   {getFieldDecorator('des', { initialValue: this.props.data.des }, {})(
                     <TextArea
@@ -91,6 +101,7 @@ class AccessLinks extends Component {
       rows: [],
       columns: [
         { title: 'NAME', dataIndex: 'name' },
+        { title: 'COMPONENT PATH', dataIndex: 'com_view' },
         {
           title: 'CREATE DATE',
           dataIndex: 'create_date',
@@ -132,7 +143,7 @@ class AccessLinks extends Component {
   }
 
   saveFormRef = formRef => {
-    this.formRef = formRef
+    this.formRef = formRef;
   }
 
   onShowEditForm = e => {
@@ -148,7 +159,7 @@ class AccessLinks extends Component {
       axios
         .get(ac_get_link, { params: v })
         .then(res => {
-          let rs = res.data
+          let rs = res.data;
           if (rs.valid) {
             this.setState({ rows: rs.data })
           } else {
@@ -171,39 +182,40 @@ class AccessLinks extends Component {
           id: values.id,
           v: values.v,
           name: values.name,
+          com_view: values.com_view,
           des: values.des,
         }
-        console.log(data)
+        console.log(data);
         if (values.id) {
-          console.log('call update')
+          console.log('call update');
           axios
             .post(ac_update_link + `${values.id}`, data)
             .then(res => {
-              let rs = res.data
+              let rs = res.data;
               if (rs.valid) {
-                form.resetFields()
-                this.setState({ modalvisible: false })
+                form.resetFields();
+                this.setState({ modalvisible: false });
               } else {
-                alert(rs.message)
+                alert(rs.message);
               }
             })
             .catch(err => {
-              console.log(err)
+              console.log(err);
             })
         } else {
-          console.log('call add')
+          console.log('call add');
           axios
             .post(ac_add_link, data)
             .then(res => {
-              console.log(res.data)
-              let rows = this.state.rows
-              rows.push(res.data)
-              this.setState({ rows: rows })
-              form.resetFields()
-              this.setState({ modalvisible: false })
+              console.log(res.data);
+              let rows = this.state.rows;
+              rows.push(res.data);
+              this.setState({ rows: rows });
+              form.resetFields();
+              this.setState({ modalvisible: false });
             })
             .catch(err => {
-              console.log(err)
+              console.log(err);
             })
         }
       }
@@ -211,32 +223,32 @@ class AccessLinks extends Component {
   }
 
   componentDidMount = () => {
-    this.onHandleSearch({})
+    this.onHandleSearch({});
   }
 
   onhandleCancel = e => {
-    this.setState({ modalvisible: false })
+    this.setState({ modalvisible: false });
   }
 
   onEnableLink = e => {
-    console.log('onEnableMenu')
-    let data = this.state.access_link_selected
+    console.log('onEnableMenu');
+    let data = this.state.access_link_selected;
     if (_.isEmpty(data)) {
-      alert('no access link selected')
-      return
+      alert('no access link selected');
+      return;
     }
     axios
       .post(ac_enable_link + `${data._id}`, data)
       .then(res => {
-        let rs = res.data
+        let rs = res.data;
         if (rs.valid) {
-          this.onHandleRefesh()
+          this.onHandleRefesh();
         } else {
-          alert(rs.message)
+          alert(rs.message);
         }
       })
       .catch(err => {
-        console.log(err)
+        console.log(err);
       })
   }
 
@@ -244,7 +256,7 @@ class AccessLinks extends Component {
     console.log('onDisableMenu')
     let data = this.state.access_link_selected
     if (_.isEmpty(data)) {
-      alert('no access link  selected')
+      alert('no access link  selected');
       return
     }
     axios
@@ -281,48 +293,32 @@ class AccessLinks extends Component {
     return (
       <div>
         <div>
-          <Button
-            type="primary"
-            icon="plus-circle"
-            value="new"
-            size={button_size}
-            onClick={this.onShowEditForm}
-          >
+          <Button type="primary" icon="plus-circle" value="new" size={button_size} onClick={this.onShowEditForm} >
             new{' '}
           </Button>
           <Divider type="vertical" />
-          <Button icon="edit" value="edit" size={button_size} onClick={this.onShowEditForm}>
-            edit
-          </Button>
+          <Button icon="edit" value="edit" size={button_size} onClick={this.onShowEditForm}> edit </Button>
           <Divider type="vertical" />
-          <Button icon="check-circle" size={button_size} onClick={this.onEnableLink}>
+          <Button icon="check-circle" size={button_size} onClick={this.onEnableLink}> 
             {' '}
             enable
           </Button>
           <Divider type="vertical" />
-          <Button icon="close-circle" size={button_size} onClick={this.onDisableLink}>
-            disable
-          </Button>
+          <Button icon="close-circle" size={button_size} onClick={this.onDisableLink}> disable </Button>
           <Divider type="vertical" />
-          <Button icon="retweet" size={button_size} onClick={this.onHandleRefesh}>
+          <Button icon="retweet" size={button_size} onClick={this.onHandleRefesh}> 
             {' '}
             refesh{' '}
           </Button>
         </div>
 
-        <Table
-          rowKey={record => record._id}
-          size="small"
-          bordered
-          style={{ marginTop: '5px' }}
-          columns={this.state.columns}
-          dataSource={this.state.rows}
+        <Table rowKey={record => record._id} size="small" bordered style={{ marginTop: '5px' }} columns={this.state.columns} dataSource={this.state.rows}
           onRow={record => {
             return {
               onClick: () => {
                 this.setState({ access_link_selected: record })
               }, // click row
-              onMouseEnter: () => {}, // mouse enter row
+              onMouseEnter: () => { }, // mouse enter row
             }
           }}
         />

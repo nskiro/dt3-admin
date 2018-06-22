@@ -231,15 +231,7 @@ class MenuEditForm extends Component {
                     </FormItem>
                   </Col>
                 </Row>
-                <Row className="show-grid">
-                  <Col md={12} sm={12} xs={12}>
-                    <FormItem label={'COMPONENT PATH'}>
-                      {getFieldDecorator('com_view', { initialValue: data_ref.com_view })(
-                        <Input placeholder="component view path" />,
-                      )}
-                    </FormItem>
-                  </Col>
-                </Row>
+                
                 <Row className="show-grid">
                   <Col md={12} sm={12} xs={12}>
                     <FormItem label={'ACCESS LINK'}>
@@ -279,7 +271,6 @@ class MenuNamed extends Component {
         { title: 'NAME', dataIndex: 'menu_label', key: 'menu_label' },
         { title: 'PARENT', dataIndex: 'menu_parent_label', key: 'menu_parent_label' },
         { title: 'ACCESS LINK', dataIndex: 'access_link_name', key: 'access_link_name' },
-        { title: 'COMPONENT PATH', dataIndex: 'com_view', key: 'com_view' },
         {
           title: 'CREATE DATE',
           dataIndex: 'create_date',
@@ -355,7 +346,6 @@ class MenuNamed extends Component {
         menu_label: values.menu_label,
         menu_parent: values.menu_parent_id,
         access_link: values.access_link,
-        com_view: values.com_view,
       }
 
       if (values.menu_parent_label !== undefined) {
