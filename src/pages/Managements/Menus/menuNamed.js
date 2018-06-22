@@ -231,7 +231,7 @@ class MenuEditForm extends Component {
                     </FormItem>
                   </Col>
                 </Row>
-                
+
                 <Row className="show-grid">
                   <Col md={12} sm={12} xs={12}>
                     <FormItem label={'ACCESS LINK'}>
