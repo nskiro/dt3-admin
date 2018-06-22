@@ -245,7 +245,7 @@ class AccessLinks extends Component {
     let data = this.state.access_link_selected
     if (_.isEmpty(data)) {
       alert('no access link  selected')
-      return;
+      return
     }
     axios
       .post(ac_disable_link + `${data._id}`, data)

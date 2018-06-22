@@ -157,9 +157,9 @@ class MenuEditForm extends Component {
     this.setState({ data_ref: data_ref })
   }
   render() {
-    const { visible, onCancel, onCreate, form } = this.props;
-    const { getFieldDecorator } = form;
-    const options = this.state.access_link_data.map(d => <Option value={d._id}>{d.name}</Option>);
+    const { visible, onCancel, onCreate, form } = this.props
+    const { getFieldDecorator } = form
+    const options = this.state.access_link_data.map(d => <Option value={d._id}>{d.name}</Option>)
 
     let data_ref = this.state.data_ref
     return (
@@ -204,8 +204,8 @@ class MenuEditForm extends Component {
                       name="menu_parent"
                       loadData={this.onLoadData}
                       onSelect={this.onSelectTreeNode}
-                    // expandedKeys={expandedKeys}
-                    // autoExpandParent={autoExpandParent}
+                      // expandedKeys={expandedKeys}
+                      // autoExpandParent={autoExpandParent}
                     >
                       {this.renderTreeNodes(this.state.menu_data)}
                     </Tree>,
@@ -310,17 +310,16 @@ class MenuNamed extends Component {
   }
   onShowEditForm = e => {
     try {
-      if (e.target){
-        if(e.target.value ==='new'){
-          this.setState({ menu_selected: {}, modalvisible: true });
-        }else if(e.target.value==='edit'){
-          this.setState({ modalvisible: true });
+      if (e.target) {
+        if (e.target.value === 'new') {
+          this.setState({ menu_selected: {}, modalvisible: true })
+        } else if (e.target.value === 'edit') {
+          this.setState({ modalvisible: true })
         }
       }
     } catch (ex) {
-      alert(ex);
+      alert(ex)
     }
-
   }
   saveFormRef = formRef => {
     this.formRef = formRef
@@ -356,7 +355,7 @@ class MenuNamed extends Component {
         menu_label: values.menu_label,
         menu_parent: values.menu_parent_id,
         access_link: values.access_link,
-        com_view: values.com_view
+        com_view: values.com_view,
       }
 
       if (values.menu_parent_label !== undefined) {
@@ -364,18 +363,18 @@ class MenuNamed extends Component {
           delete data.menu_parent
         }
       }
-      console.log(data);
+      console.log(data)
       if (values.id) {
         console.log('call update')
         axios
           .post(menu_update_link + `${values.id}`, data)
           .then(res => {
             console.log(res.data)
-            let rs = res.data;
+            let rs = res.data
             if (rs.valid) {
               form.resetFields()
-              this.setState({ modalvisible: false });
-              this.onHandleLoadMenus();
+              this.setState({ modalvisible: false })
+              this.onHandleLoadMenus()
             } else {
               alert(rs.message)
             }
@@ -427,7 +426,7 @@ class MenuNamed extends Component {
   }
 
   onDisableMenu = e => {
-    let data = this.state.menu_selected;
+    let data = this.state.menu_selected
     if (_.isEmpty(data)) {
       alert('no menu selected')
       return
@@ -437,9 +436,9 @@ class MenuNamed extends Component {
     axios
       .post(menu_disable_link + `${id}`, data)
       .then(res => {
-        let rs = res.data;
+        let rs = res.data
         if (rs.valid) {
-          this.onHandleLoadMenus();
+          this.onHandleLoadMenus()
         } else {
           alert(rs.message)
         }
@@ -449,41 +448,87 @@ class MenuNamed extends Component {
       })
   }
   componentDidMount = () => {
-    this.onHandleLoadMenus();
+    this.onHandleLoadMenus()
   }
   render() {
-    const { button_size } = this.state;
-    const WapperMenuEditForm = Form.create()(MenuEditForm);
+    const { button_size } = this.state
+    const WapperMenuEditForm = Form.create()(MenuEditForm)
     return (
       <div>
         <div>
-          <Button type="primary" icon="plus-circle" value="new" size={button_size} onClick={this.onShowEditForm} >new </Button>
+          <Button
+            type="primary"
+            icon="plus-circle"
+            value="new"
+            size={button_size}
+            onClick={this.onShowEditForm}
+          >
+            new{' '}
+          </Button>
           <Divider type="vertical" />
-          <Button icon="edit" value="edit" size={button_size} disabled={_.isEmpty(this.state.menu_selected) ? true : false} onClick={this.onShowEditForm}>
-            {' '} edit{' '}</Button>
+          <Button
+            icon="edit"
+            value="edit"
+            size={button_size}
+            disabled={_.isEmpty(this.state.menu_selected) ? true : false}
+            onClick={this.onShowEditForm}
+          >
+            {' '}
+            edit{' '}
+          </Button>
           <Divider type="vertical" />
-          <Popconfirm title="Are you sure enable ?" onConfirm={this.onEnableMenu} okText="Yes" cancelText="No">
-            <Button icon="check-circle" size={button_size} disabled={_.isEmpty(this.state.menu_selected) ? true : false}>
-              {' '} enable{' '}
+          <Popconfirm
+            title="Are you sure enable ?"
+            onConfirm={this.onEnableMenu}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button
+              icon="check-circle"
+              size={button_size}
+              disabled={_.isEmpty(this.state.menu_selected) ? true : false}
+            >
+              {' '}
+              enable{' '}
             </Button>
           </Popconfirm>
           <Divider type="vertical" />
-          <Popconfirm title="Are you sure disable ?" onConfirm={this.onDisableMenu} okText="Yes" cancelText="No" >
-            <Button icon="close-circle" type="danger" size={button_size} disabled={_.isEmpty(this.state.menu_selected) ? true : false}>
+          <Popconfirm
+            title="Are you sure disable ?"
+            onConfirm={this.onDisableMenu}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button
+              icon="close-circle"
+              type="danger"
+              size={button_size}
+              disabled={_.isEmpty(this.state.menu_selected) ? true : false}
+            >
               {' '}
               disable{' '}
             </Button>
           </Popconfirm>
-          <Divider type="vertical" /><Button icon="retweet" size={button_size} onClick={this.onHandleLoadMenus}> refesh</Button>
+          <Divider type="vertical" />
+          <Button icon="retweet" size={button_size} onClick={this.onHandleLoadMenus}>
+            {' '}
+            refesh
+          </Button>
         </div>
 
-        <Table rowKey={'_id'} size="small" bordered style={{ marginTop: '5px' }} columns={this.state.columns}
-          dataSource={this.state.rows} onRow={record => {
+        <Table
+          rowKey={'_id'}
+          size="small"
+          bordered
+          style={{ marginTop: '5px' }}
+          columns={this.state.columns}
+          dataSource={this.state.rows}
+          onRow={record => {
             return {
               onClick: () => {
                 this.setState({ menu_selected: record })
               }, // click row
-              onMouseEnter: () => { }, // mouse enter row
+              onMouseEnter: () => {}, // mouse enter row
             }
           }}
         />
