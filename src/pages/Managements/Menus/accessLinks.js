@@ -1,13 +1,15 @@
 import React, { Component } from 'react'
 import { Grid, Row, Col } from 'react-bootstrap'
 
-import { Tabs, Table, Form, Button, Input, Pagination, Icon, Modal } from 'antd'
+import { Tabs, Table, Form, Button, Input, Divider, Popconfirm, Modal } from 'antd'
 import moment from 'moment'
 
 import axios from '../../../axiosInst'
 
 import PropTypes from 'prop-types'
 import DateFormatter from '../../../components/Commons/dateformatter'
+
+const _ = require('lodash')
 
 const FormItem = Form.Item
 const { TextArea } = Input
@@ -21,15 +23,15 @@ const ac_disable_link = 'api/admin/accesslink/disable/'
 
 class AccessLinkEditForm extends Component {
   render() {
-    const { visible, onCancel, onCreate, form } = this.props
-    const { getFieldDecorator } = form
+    const { getFieldDecorator } = this.props.form
+    const { data } = this.props
     return (
       <Modal
-        title="ACCESS LINK"
-        visible={visible}
-        onOk={onCreate}
+        title={data._id ? 'Edit access link' : 'Create new access link'}
+        visible={this.props.visible}
+        onOk={this.props.onCreate}
         maskClosable={false}
-        onCancel={onCancel}
+        onCancel={this.props.onCancel}
         style={{ top: 5, left: 5 }}
       >
         <Form>
@@ -37,23 +39,34 @@ class AccessLinkEditForm extends Component {
             <Row className="show-grid">
               <Col>
                 <FormItem>
-                  {getFieldDecorator('id', { initialValue: this.props.data._id })(
-                    <Input name="id" style={{ display: 'none', visible: false }} />,
+                  {getFieldDecorator('id', { initialValue: data._id })(
+                    <Input style={{ display: 'none', visible: false }} />,
                   )}
                 </FormItem>
               </Col>
               <Col>
                 <FormItem>
-                  {getFieldDecorator('v', { initialValue: this.props.data._v })(
-                    <Input name="v" style={{ display: 'none', visible: false }} />,
+                  {getFieldDecorator('v', { initialValue: data.__v })(
+                    <Input style={{ display: 'none', visible: false }} />,
                   )}
                 </FormItem>
               </Col>
               <Col md={12} sm={12} xs={12}>
                 <FormItem label={'Access link name'}>
-                  {getFieldDecorator('name', { initialValue: this.props.data.name }, {})(
-                    <Input name="name" placeholder="access link name" />,
-                  )}
+                  {getFieldDecorator('name', {
+                    rules: [{ required: true, message: 'Please input access link name!' }],
+                    initialValue: data.name,
+                  })(<Input placeholder="access link name" />)}
+                </FormItem>
+              </Col>
+            </Row>
+            <Row className="show-grid">
+              <Col md={12} sm={12} xs={12}>
+                <FormItem label={'Component path'}>
+                  {getFieldDecorator('com_view', {
+                    rules: [{ required: true, message: 'Please input Component path!' }],
+                    initialValue: data.com_view,
+                  })(<Input placeholder="Component view path" />)}
                 </FormItem>
               </Col>
             </Row>
@@ -87,10 +100,23 @@ class AccessLinks extends Component {
     this.state = {
       rows: [],
       columns: [
-        { title: 'NAME', dataIndex: 'name', key: 'name' },
-        { title: 'CREATE DATE', dataIndex: 'create_date', key: 'create_date' },
-        { title: 'UPDATE DATE', dataIndex: 'update_date', key: 'update_date' },
-        { title: 'DESCRIPTION', dataIndex: 'des', key: 'des' },
+        { title: 'NAME', dataIndex: 'name' },
+        { title: 'COMPONENT PATH', dataIndex: 'com_view' },
+        {
+          title: 'CREATE DATE',
+          dataIndex: 'create_date',
+          render: (text, row) => (
+            <span>{text === null ? '' : moment(new Date(text)).format('MM/DD/YYYY HH:mm:ss')}</span>
+          ),
+        },
+        {
+          title: 'UPDATE DATE',
+          dataIndex: 'update_date',
+          render: (text, row) => (
+            <span>{text === null ? '' : moment(new Date(text)).format('MM/DD/YYYY HH:mm:ss')}</span>
+          ),
+        },
+        { title: 'DESCRIPTION', dataIndex: 'des' },
         {
           title: 'STATUS',
           dataIndex: 'record_status',
@@ -108,7 +134,7 @@ class AccessLinks extends Component {
       edit_status: false,
       enable_status: true,
       disable_status: true,
-      button_size: 'default',
+      button_size: 'small',
       access_link_selected: {},
       modalvisible: false,
 
@@ -121,7 +147,9 @@ class AccessLinks extends Component {
   }
 
   onShowEditForm = e => {
-    console.log('onAddMenu')
+    if (e.target.value === 'new') {
+      this.setState({ access_link_selected: {} })
+    }
     this.setState({ modalvisible: true })
   }
 
@@ -138,7 +166,6 @@ class AccessLinks extends Component {
             this.setState({ rows: [] })
             alert(rs.message)
           }
-          console.log(res.data)
         })
         .catch(err => {
           console.log(err)
@@ -149,45 +176,48 @@ class AccessLinks extends Component {
   onHandleCreateMenu = e => {
     const form = this.formRef.props.form
     form.validateFields((err, values) => {
-      console.log('values =' + JSON.stringify(values))
-      let data = {
-        _id: values.id,
-        name: values.name,
-        des: values.des,
-      }
-      console.log(data)
-      if (values.id) {
-        console.log('call update')
-        axios
-          .post(ac_update_link + `${values.id}`, data)
-          .then(res => {
-            console.log(res.data)
-            let rs = res.data
-            if (rs.valid) {
+      if (!err) {
+        console.log(values)
+        let data = {
+          id: values.id,
+          v: values.v,
+          name: values.name,
+          com_view: values.com_view,
+          des: values.des,
+        }
+        console.log(data)
+        if (values.id) {
+          console.log('call update')
+          axios
+            .post(ac_update_link + `${values.id}`, data)
+            .then(res => {
+              let rs = res.data
+              if (rs.valid) {
+                form.resetFields()
+                this.setState({ modalvisible: false })
+              } else {
+                alert(rs.message)
+              }
+            })
+            .catch(err => {
+              console.log(err)
+            })
+        } else {
+          console.log('call add')
+          axios
+            .post(ac_add_link, data)
+            .then(res => {
+              console.log(res.data)
+              let rows = this.state.rows
+              rows.push(res.data)
+              this.setState({ rows: rows })
               form.resetFields()
               this.setState({ modalvisible: false })
-            } else {
-              alert(rs.message)
-            }
-          })
-          .catch(err => {
-            console.log(err)
-          })
-      } else {
-        console.log('call add')
-        axios
-          .post(ac_add_link, data)
-          .then(res => {
-            console.log(res.data)
-            let rows = this.state.rows
-            rows.push(res.data)
-            this.setState({ rows: rows })
-            form.resetFields()
-            this.setState({ modalvisible: false })
-          })
-          .catch(err => {
-            console.log(err)
-          })
+            })
+            .catch(err => {
+              console.log(err)
+            })
+        }
       }
     })
   }
@@ -200,16 +230,48 @@ class AccessLinks extends Component {
     this.setState({ modalvisible: false })
   }
 
-  onEditMenu = e => {
-    console.log('onEditMenu')
-  }
-
-  onEnableMenu = e => {
+  onEnableLink = e => {
     console.log('onEnableMenu')
+    let data = this.state.access_link_selected
+    if (_.isEmpty(data)) {
+      alert('no access link selected')
+      return
+    }
+    axios
+      .post(ac_enable_link + `${data._id}`, data)
+      .then(res => {
+        let rs = res.data
+        if (rs.valid) {
+          this.onHandleRefesh()
+        } else {
+          alert(rs.message)
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
-  onDisableMenu = e => {
+  onDisableLink = e => {
     console.log('onDisableMenu')
+    let data = this.state.access_link_selected
+    if (_.isEmpty(data)) {
+      alert('no access link  selected')
+      return
+    }
+    axios
+      .post(ac_disable_link + `${data._id}`, data)
+      .then(res => {
+        let rs = res.data
+        if (rs.valid) {
+          this.onHandleRefesh()
+        } else {
+          alert(rs.message)
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   onToggleShowSearchPanel = () => {
@@ -220,6 +282,10 @@ class AccessLinks extends Component {
   onRowSelected = e => {
     console.log(e)
   }
+
+  onHandleRefesh = e => {
+    this.onHandleSearch({})
+  }
   render() {
     const { button_size } = this.state
     const WrappedAccessLinkEditForm = Form.create()(AccessLinkEditForm)
@@ -227,27 +293,44 @@ class AccessLinks extends Component {
     return (
       <div>
         <div>
-          <Button value="new" size={button_size} onClick={this.onShowEditForm}>
-            NEW
+          <Button
+            type="primary"
+            icon="plus-circle"
+            value="new"
+            size={button_size}
+            onClick={this.onShowEditForm}
+          >
+            new{' '}
           </Button>
-          <Button value="edit" size={button_size} onClick={this.onShowEditForm}>
-            EDIT
+          <Divider type="vertical" />
+          <Button icon="edit" value="edit" size={button_size} onClick={this.onShowEditForm}>
+            {' '}
+            edit{' '}
           </Button>
-          <Button size={button_size} onClick={this.onEnableMenu}>
-            ENABLE
+          <Divider type="vertical" />
+          <Button icon="check-circle" size={button_size} onClick={this.onEnableLink}>
+            {' '}
+            enable
           </Button>
-          <Button size={button_size} onClick={this.onDisableMenu}>
-            DISABLE
+          <Divider type="vertical" />
+          <Button icon="close-circle" size={button_size} onClick={this.onDisableLink}>
+            {' '}
+            disable{' '}
+          </Button>
+          <Divider type="vertical" />
+          <Button icon="retweet" size={button_size} onClick={this.onHandleRefesh}>
+            {' '}
+            refesh{' '}
           </Button>
         </div>
 
         <Table
           rowKey={record => record._id}
-          className="components-table-demo-nested"
+          size="small"
+          bordered
+          style={{ marginTop: '5px' }}
           columns={this.state.columns}
           dataSource={this.state.rows}
-          pagination={{ pageSize: 50 }}
-          scroll={{ y: 240 }}
           onRow={record => {
             return {
               onClick: () => {
