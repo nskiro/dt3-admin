@@ -10,6 +10,10 @@ import AccessLinks from './accessLinks';
 const Panel = Collapse.Panel;
 
 class Menus extends Component {
+  static defaultProps = {
+    pathName: 'Menu Management',
+    roles: ['administrator'],
+  }
   render() {
     const props = this.props;
     const WapperAccessLinkForm = Form.create()(AccessLinks);

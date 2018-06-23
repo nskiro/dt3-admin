@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Row, Col, Form, Input, Button, Table, Divider, Modal, Popconfirm, Select, Tag } from 'antd'
+import { Row, Col, Form, Input, Button, Table, Divider, Modal, Popconfirm, Select, Tag, Spin } from 'antd'
 import _ from 'lodash'
 import axios from '../../../axiosIns'
 
@@ -140,6 +140,7 @@ const WrappedAddToRoleForm = Form.create()(AddToRoleForm);
 
 class GroupForm extends Component {
   state = {
+    loading: false,
     roleList: [],
     groupList: [],
     selectedRows: [],
@@ -155,10 +156,11 @@ class GroupForm extends Component {
   }
 
   componentDidMount() {
+    this.setState({ loading: true });
     axios
       .get('api/admin/group')
       .then(res => {
-        this.setState({ groupList: res.data })
+        this.setState({ groupList: res.data, loading: false });
       })
       .catch(err => {
         console.log(err)
@@ -260,7 +262,7 @@ class GroupForm extends Component {
   }
 
   render() {
-    const { groupList, roleList, selectedRows, showUpdateModal, showAddToRoleModal } = this.state
+    const { loading, groupList, roleList, selectedRows, showUpdateModal, showAddToRoleModal } = this.state
     return (
       <Row>
         <Col span={8}>
@@ -311,15 +313,17 @@ class GroupForm extends Component {
               Delete
             </Button>
           </Popconfirm>
-          <Table
-            style={{ marginTop: '5px' }}
-            rowKey={'_id'}
-            columns={columns}
-            dataSource={groupList}
-            rowSelection={this.rowSelection}
-            size="small"
-            bordered
-          />
+          <Spin spinning={loading}>
+            <Table
+              style={{ marginTop: '5px' }}
+              rowKey={'_id'}
+              columns={columns}
+              dataSource={groupList}
+              rowSelection={this.rowSelection}
+              size="small"
+              bordered
+            />
+          </Spin>
         </Col>
       </Row>
     )

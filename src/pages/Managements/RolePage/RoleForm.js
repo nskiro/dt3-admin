@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Row, Col, Form, Input, Button, Table, Divider, Modal, Popconfirm, TreeSelect } from 'antd'
+import { Row, Col, Form, Input, Button, Table, Divider, Modal, Popconfirm, TreeSelect, Spin } from 'antd'
 import _ from 'lodash'
 import axios from '../../../axiosIns'
 
@@ -74,8 +74,8 @@ class UpdateRoleForm extends Component {
     const { getFieldDecorator } = this.props.form
     const { data, treeData } = this.props
     let menu = [];
-    if(data.length > 0 && data[0].menu.length > 0){
-      menu = data[0].menu.map((obj)=>{
+    if (data.length > 0 && data[0].menu.length > 0) {
+      menu = data[0].menu.map((obj) => {
         return obj._id;
       })
     }
@@ -126,6 +126,7 @@ const WrappedUpdateRoleForm = Form.create()(UpdateRoleForm)
 
 class RoleForm extends Component {
   state = {
+    loading: false,
     roleList: [],
     menu_data: [],
     selectedMenu: [],
@@ -141,10 +142,11 @@ class RoleForm extends Component {
   }
 
   componentDidMount() {
+    this.setState({ loading: true });
     axios
       .get('api/admin/role')
       .then(res => {
-        this.setState({ roleList: res.data })
+        this.setState({ roleList: res.data, loading: false });
       })
       .catch(err => {
         console.log(err)
@@ -234,7 +236,7 @@ class RoleForm extends Component {
   }
 
   render() {
-    const { roleList, menu_data, selectedRows, showUpdateModal } = this.state
+    const { loading, roleList, menu_data, selectedRows, showUpdateModal } = this.state
     return (
       <span>
         <Row>
@@ -279,15 +281,17 @@ class RoleForm extends Component {
                 Delete
             </Button>
             </Popconfirm>
-            <Table
-              style={{ marginTop: '5px' }}
-              rowKey={'_id'}
-              columns={columns}
-              dataSource={roleList}
-              rowSelection={this.rowSelection}
-              size="small"
-              bordered
-            />
+            <Spin spinning={loading}>
+              <Table
+                style={{ marginTop: '5px' }}
+                rowKey={'_id'}
+                columns={columns}
+                dataSource={roleList}
+                rowSelection={this.rowSelection}
+                size="small"
+                bordered
+              />
+            </Spin>
           </Col>
         </Row>
       </span>

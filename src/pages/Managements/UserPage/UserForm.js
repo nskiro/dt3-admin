@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Form, Input, Button, Table, Divider, Modal, Popconfirm, Select, Tag } from 'antd';
+import { Row, Col, Form, Input, Button, Table, Divider, Modal, Popconfirm, Select, Tag, Spin } from 'antd';
 import _ from 'lodash';
 import axios from '../../../axiosIns';
 
@@ -268,6 +268,7 @@ class UserForm extends Component {
         userList: [],
         roleList: [],
         groupList: [],
+        loading: false,
         selectedRows: [],
         selectedRowKeys: [],
         showAddUserModal: false,
@@ -284,9 +285,10 @@ class UserForm extends Component {
     };
 
     componentDidMount() {
+        this.setState({ loading: true });
         axios.get('api/admin/user')
             .then((res) => {
-                this.setState({ userList: res.data });
+                this.setState({ userList: res.data, loading: false });
             })
             .catch((err) => {
                 console.log(err);
@@ -426,7 +428,7 @@ class UserForm extends Component {
     }
 
     render() {
-        const { userList, groupList, roleList, selectedRows, showAddUserModal, showUpdateModal, showAddToGroupModal, showAddToRoleModal } = this.state;
+        const { loading, userList, groupList, roleList, selectedRows, showAddUserModal, showUpdateModal, showAddToGroupModal, showAddToRoleModal } = this.state;
         return (
             <Row>
                 <Col>
@@ -472,7 +474,9 @@ class UserForm extends Component {
                     <Popconfirm title="Are you sure delete?" onConfirm={this.handleDelete} okText="Yes" cancelText="No">
                         <Button icon="close" type="danger" size="small" disabled={selectedRows.length === 0 ? true : false}>Delete</Button>
                     </Popconfirm>
-                    <Table style={{ marginTop: '5px' }} size="small" bordered rowKey={'_id'} columns={columns} dataSource={userList} rowSelection={this.rowSelection} />
+                    <Spin spinning={loading}>
+                        <Table style={{ marginTop: '5px' }} size="small" bordered rowKey={'_id'} columns={columns} dataSource={userList} rowSelection={this.rowSelection} />
+                    </Spin>
                 </Col>
             </Row>
         )
