@@ -14,19 +14,20 @@ const columns = [
   {
     title: 'Group Name',
     dataIndex: 'group_name',
-  }, {
+  },
+  {
     title: 'Role',
     dataIndex: 'role',
     render: (text, record) => {
-      let roleString = text.map((obj) => {
-        return <Tag color="#87d068" key={obj.role_name}>{obj.role_name}</Tag>;
-      });
-      return (
-        <span>
-          {roleString}
-        </span>
-      )
-    }
+      let roleString = text.map(obj => {
+        return (
+          <Tag color="#87d068" key={obj.role_name}>
+            {obj.role_name}
+          </Tag>
+        )
+      })
+      return <span>{roleString}</span>
+    },
   },
   {
     title: 'Created Date',
@@ -100,9 +101,10 @@ class UpdateGroupForm extends Component {
 
 class AddToRoleForm extends Component {
   render() {
-    const { getFieldDecorator } = this.props.form;
-    const { data, roleList } = this.props;
-    const groupRole = data.length > 0 && data[0].role.length > 0 ? data[0].role.map((obj) => obj._id) : [];
+    const { getFieldDecorator } = this.props.form
+    const { data, roleList } = this.props
+    const groupRole =
+      data.length > 0 && data[0].role.length > 0 ? data[0].role.map(obj => obj._id) : []
     return (
       <Modal
         title="Add Role for Group"
@@ -114,29 +116,31 @@ class AddToRoleForm extends Component {
         <Form onSubmit={this.props.handleSubmit} layout="horizontal">
           <FormItem>
             {getFieldDecorator('id', { initialValue: data.length > 0 ? data[0]._id : '' })(
-              <Input style={{ display: 'none', visible: false }} />
+              <Input style={{ display: 'none', visible: false }} />,
             )}
           </FormItem>
           <FormItem>
             {getFieldDecorator('roleId', { initialValue: groupRole })(
-              <Select mode="multiple" >
-                {
-                  roleList.map((role) => {
-                    return <Option value={role._id} key={role._id}>{role.role_name}</Option>;
-                  })
-                }
-              </Select>
+              <Select mode="multiple">
+                {roleList.map(role => {
+                  return (
+                    <Option value={role._id} key={role._id}>
+                      {role.role_name}
+                    </Option>
+                  )
+                })}
+              </Select>,
             )}
           </FormItem>
         </Form>
       </Modal>
-    );
+    )
   }
 }
 
 const WrappedAddGroupForm = Form.create()(AddGroupForm)
 const WrappedUpdateGroupForm = Form.create()(UpdateGroupForm)
-const WrappedAddToRoleForm = Form.create()(AddToRoleForm);
+const WrappedAddToRoleForm = Form.create()(AddToRoleForm)
 
 class GroupForm extends Component {
   state = {
@@ -145,7 +149,7 @@ class GroupForm extends Component {
     selectedRows: [],
     selectedRowKeys: [],
     showUpdateModal: false,
-    showAddToRoleModal: false
+    showAddToRoleModal: false,
   }
 
   rowSelection = {
@@ -194,16 +198,15 @@ class GroupForm extends Component {
   handleAddToRole = () => {
     this.addToRoleForm.validateFields((err, value) => {
       if (!err) {
-        axios.put('api/admin/group/addrole', { ...value })
-          .then((res) => {
-            let temp = [...this.state.groupList];
-            temp.splice(_.findIndex(temp, { _id: res.data._id }), 1, { ...res.data });
-            this.setState({ groupList: temp });
-            this.closeAddToRoleModal();
+        axios
+          .put('api/admin/group/addrole', { ...value })
+          .then(res => {
+            let temp = [...this.state.groupList]
+            temp.splice(_.findIndex(temp, { _id: res.data._id }), 1, { ...res.data })
+            this.setState({ groupList: temp })
+            this.closeAddToRoleModal()
           })
-          .catch((err) => {
-
-          })
+          .catch(err => {})
       }
     })
   }
@@ -276,7 +279,7 @@ class GroupForm extends Component {
             data={selectedRows}
           />
           <WrappedAddToRoleForm
-            ref={node => this.addToRoleForm = node}
+            ref={node => (this.addToRoleForm = node)}
             visible={showAddToRoleModal}
             onOk={this.handleAddToRole}
             onCancel={this.closeAddToRoleModal}
@@ -285,7 +288,14 @@ class GroupForm extends Component {
           />
         </Col>
         <Col span={16}>
-          <Button icon="key" size="small" onClick={this.showAddToRoleModal} disabled={selectedRows.length === 0 || selectedRows.length > 1 ? true : false}>Role</Button>
+          <Button
+            icon="key"
+            size="small"
+            onClick={this.showAddToRoleModal}
+            disabled={selectedRows.length === 0 || selectedRows.length > 1 ? true : false}
+          >
+            Role
+          </Button>
           <Divider type="vertical" />
           <Button
             icon="edit"

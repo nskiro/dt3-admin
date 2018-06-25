@@ -51,9 +51,12 @@ class MenuEditForm extends Component {
       .then(res => {
         let rs = res.data
         if (rs.valid) {
-          let options = rs.data.map(d => <Option value={d._id} key={d._id}>{d.name}</Option>);
-          this.setState({ access_link_data: rs.data, options: options });
-
+          let options = rs.data.map(d => (
+            <Option value={d._id} key={d._id}>
+              {d.name}
+            </Option>
+          ))
+          this.setState({ access_link_data: rs.data, options: options })
         } else {
           this.setState({ access_link_data: [], options: [] })
           alert(rs.message)
@@ -207,8 +210,8 @@ class MenuEditForm extends Component {
                       name="menu_parent"
                       loadData={this.onLoadData}
                       onSelect={this.onSelectTreeNode}
-                    // expandedKeys={expandedKeys}
-                    // autoExpandParent={autoExpandParent}
+                      // expandedKeys={expandedKeys}
+                      // autoExpandParent={autoExpandParent}
                     >
                       {this.renderTreeNodes(this.state.menu_data)}
                     </Tree>,
@@ -521,7 +524,7 @@ class MenuNamed extends Component {
               onClick: () => {
                 this.setState({ menu_selected: record })
               }, // click row
-              onMouseEnter: () => { }, // mouse enter row
+              onMouseEnter: () => {}, // mouse enter row
             }
           }}
         />
