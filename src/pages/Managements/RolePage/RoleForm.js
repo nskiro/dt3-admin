@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Row, Col, Form, Input, Button, Table, Divider, Modal, Popconfirm, TreeSelect } from 'antd'
 import _ from 'lodash'
-import axios from '../../../axiosIns'
+import axios from '../../../axiosInst'
 
 const FormItem = Form.Item
 const formItemLayout = {
