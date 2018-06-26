@@ -1,269 +1,241 @@
+<<<<<<< HEAD
 import React, { Component } from 'react';
 import { Row, Col, Form, Input, Button, Table, Divider, Modal, Popconfirm, Select, Tag, Spin } from 'antd';
 import _ from 'lodash';
 import axios from '../../../axiosIns';
+=======
+import React, { Component } from 'react'
+import { Row, Col, Form, Input, Button, Table, Divider, Modal, Popconfirm, Select, Tag } from 'antd'
+import _ from 'lodash'
+import axios from '../../../axiosInst'
+>>>>>>> 699b3ac44eae83ebbaca6361e9b1c677f4c84029
 
-
-const FormItem = Form.Item;
-const Option = Select.Option;
+const FormItem = Form.Item
+const Option = Select.Option
 const formItemLayout = {
-    labelCol: { span: 6 },
-    wrapperCol: { span: 14 },
-};
+  labelCol: { span: 6 },
+  wrapperCol: { span: 14 },
+}
 
 const columns = [
-    {
-        title: 'User Name',
-        dataIndex: 'username'
-    }, {
-        title: 'Full Name',
-        dataIndex: 'fullname'
-    }, {
-        title: 'Department',
-        dataIndex: 'dept'
-    }, {
-        title: 'Last Login',
-        dataIndex: 'last_login',
-        render: (text, record) => (
-            <span>
-                {text === null ? '' : new Date(text).toLocaleDateString("vi-VN")}
-            </span>
+  {
+    title: 'User Name',
+    dataIndex: 'username',
+  },
+  {
+    title: 'Full Name',
+    dataIndex: 'fullname',
+  },
+  {
+    title: 'Department',
+    dataIndex: 'dept',
+  },
+  {
+    title: 'Last Login',
+    dataIndex: 'last_login',
+    render: (text, record) => (
+      <span>{text === null ? '' : new Date(text).toLocaleDateString('vi-VN')}</span>
+    ),
+  },
+  {
+    title: 'Group',
+    dataIndex: 'group',
+    render: (text, record) => {
+      let groupString = text.map(obj => {
+        return (
+          <Tag color="#108ee9" key={obj.group_name}>
+            {obj.group_name}
+          </Tag>
         )
-    }, {
-        title: 'Group',
-        dataIndex: 'group',
-        render: (text, record) => {
-            let groupString = text.map((obj) => {
-                return <Tag color="#108ee9" key={obj.group_name}>{obj.group_name}</Tag>;
-            });
-            return (
-                <span>
-                    {groupString}
-                </span>
-            )
-        }
-    }, {
-        title: 'Role',
-        dataIndex: 'role',
-        render: (text, record) => {
-            let roleString = text.map((obj) => {
-                return <Tag color="#87d068" key={obj.role_name}>{obj.role_name}</Tag>;
-            });
-            return (
-                <span>
-                    {roleString}
-                </span>
-            )
-        }
-    }
-];
+      })
+      return <span>{groupString}</span>
+    },
+  },
+  {
+    title: 'Role',
+    dataIndex: 'role',
+    render: (text, record) => {
+      let roleString = text.map(obj => {
+        return (
+          <Tag color="#87d068" key={obj.role_name}>
+            {obj.role_name}
+          </Tag>
+        )
+      })
+      return <span>{roleString}</span>
+    },
+  },
+]
 
 class AddUserForm extends Component {
-    render() {
-        const { getFieldDecorator } = this.props.form;
+  render() {
+    const { getFieldDecorator } = this.props.form
 
-        return (
-            <Modal
-                title="New User"
-                visible={this.props.visible}
-                onOk={this.props.onOk}
-                onCancel={this.props.onCancel}
-                destroyOnClose
-            >
-                <Form layout="horizontal">
-                    <FormItem
-                        label="User Name"
-                        {...formItemLayout}
-                    >
-                        {getFieldDecorator('username', {
-                            rules: [{ required: true, message: 'Please input user name!' }],
-                        })(
-                            <Input />
-                        )}
-                    </FormItem>
-                    <FormItem
-                        label="Password"
-                        {...formItemLayout}
-                    >
-                        {getFieldDecorator('password', {
-                            rules: [{ required: true, message: 'Please input password!' }],
-                        })(
-                            <Input />
-                        )}
-                    </FormItem>
-                    <FormItem
-                        label="Full Name"
-                        {...formItemLayout}
-                    >
-                        {getFieldDecorator('fullname', {
-                            rules: [{ required: true, message: 'Please input user full name!' }],
-                        })(
-                            <Input />
-                        )}
-                    </FormItem>
-                    <FormItem
-                        label="Department"
-                        {...formItemLayout}
-                    >
-                        {getFieldDecorator('dept', {
-                            rules: [{ required: true, message: 'Please input department!' }],
-                        })(
-                            <Input />
-                        )}
-                    </FormItem>
-                </Form >
-            </Modal>
-        );
-    }
+    return (
+      <Modal
+        title="New User"
+        visible={this.props.visible}
+        onOk={this.props.onOk}
+        onCancel={this.props.onCancel}
+        destroyOnClose
+      >
+        <Form layout="horizontal">
+          <FormItem label="User Name" {...formItemLayout}>
+            {getFieldDecorator('username', {
+              rules: [{ required: true, message: 'Please input user name!' }],
+            })(<Input />)}
+          </FormItem>
+          <FormItem label="Password" {...formItemLayout}>
+            {getFieldDecorator('password', {
+              rules: [{ required: true, message: 'Please input password!' }],
+            })(<Input />)}
+          </FormItem>
+          <FormItem label="Full Name" {...formItemLayout}>
+            {getFieldDecorator('fullname', {
+              rules: [{ required: true, message: 'Please input user full name!' }],
+            })(<Input />)}
+          </FormItem>
+          <FormItem label="Department" {...formItemLayout}>
+            {getFieldDecorator('dept', {
+              rules: [{ required: true, message: 'Please input department!' }],
+            })(<Input />)}
+          </FormItem>
+        </Form>
+      </Modal>
+    )
+  }
 }
 
 class UpdateUserForm extends Component {
-    render() {
-        const { getFieldDecorator } = this.props.form;
-        const { data } = this.props;
-        return (
-            <Modal
-                title="Update User Detail"
-                visible={this.props.visible}
-                onOk={this.props.onOk}
-                onCancel={this.props.onCancel}
-                destroyOnClose
-            >
-                <Form layout="horizontal">
-                    <FormItem>
-                        {getFieldDecorator('id', { initialValue: data.length > 0 ? data[0]._id : '' })(
-                            <Input style={{ display: 'none', visible: false }} />
-                        )}
-                    </FormItem>
-                    <FormItem
-                        label="User Name"
-                        {...formItemLayout}
-                    >
-                        {getFieldDecorator('username', {
-                            rules: [{ required: true, message: 'Please input user name!' }],
-                            initialValue: data.length > 0 ? data[0].username : ''
-                        })(
-                            <Input />
-                        )}
-                    </FormItem>
-                    <FormItem
-                        label="Password"
-                        {...formItemLayout}
-                    >
-                        {getFieldDecorator('password', {
-                            rules: [{ required: true, message: 'Please input password!' }],
-                            initialValue: data.length > 0 ? data[0].password : ''
-                        })(
-                            <Input />
-                        )}
-                    </FormItem>
-                    <FormItem
-                        label="Full Name"
-                        {...formItemLayout}
-                    >
-                        {getFieldDecorator('fullname', {
-                            rules: [{ required: true, message: 'Please input user full name!' }],
-                            initialValue: data.length > 0 ? data[0].fullname : ''
-                        })(
-                            <Input />
-                        )}
-                    </FormItem>
-                    <FormItem
-                        label="Department"
-                        {...formItemLayout}
-                    >
-                        {getFieldDecorator('dept', {
-                            rules: [{ required: true, message: 'Please input department!' }],
-                            initialValue: data.length > 0 ? data[0].dept : ''
-                        })(
-                            <Input />
-                        )}
-                    </FormItem>
-                </Form>
-            </Modal>
-        );
-    }
+  render() {
+    const { getFieldDecorator } = this.props.form
+    const { data } = this.props
+    return (
+      <Modal
+        title="Update User Detail"
+        visible={this.props.visible}
+        onOk={this.props.onOk}
+        onCancel={this.props.onCancel}
+        destroyOnClose
+      >
+        <Form layout="horizontal">
+          <FormItem>
+            {getFieldDecorator('id', { initialValue: data.length > 0 ? data[0]._id : '' })(
+              <Input style={{ display: 'none', visible: false }} />,
+            )}
+          </FormItem>
+          <FormItem label="User Name" {...formItemLayout}>
+            {getFieldDecorator('username', {
+              rules: [{ required: true, message: 'Please input user name!' }],
+              initialValue: data.length > 0 ? data[0].username : '',
+            })(<Input />)}
+          </FormItem>
+          <FormItem label="Password" {...formItemLayout}>
+            {getFieldDecorator('password', {
+              rules: [{ required: true, message: 'Please input password!' }],
+              initialValue: data.length > 0 ? data[0].password : '',
+            })(<Input />)}
+          </FormItem>
+          <FormItem label="Full Name" {...formItemLayout}>
+            {getFieldDecorator('fullname', {
+              rules: [{ required: true, message: 'Please input user full name!' }],
+              initialValue: data.length > 0 ? data[0].fullname : '',
+            })(<Input />)}
+          </FormItem>
+          <FormItem label="Department" {...formItemLayout}>
+            {getFieldDecorator('dept', {
+              rules: [{ required: true, message: 'Please input department!' }],
+              initialValue: data.length > 0 ? data[0].dept : '',
+            })(<Input />)}
+          </FormItem>
+        </Form>
+      </Modal>
+    )
+  }
 }
 
 class AddToGroupForm extends Component {
-    render() {
-        const { getFieldDecorator } = this.props.form;
-        const { data, groupList } = this.props;
-        const userGroup = data.length > 0 ? data[0].group.map((obj) => obj._id) : [];
-        return (
-            <Modal
-                title="Add User To Group"
-                visible={this.props.visible}
-                onOk={this.props.onOk}
-                onCancel={this.props.onCancel}
-                destroyOnClose
-            >
-                <Form onSubmit={this.props.handleSubmit} layout="horizontal">
-                    <FormItem>
-                        {getFieldDecorator('id', { initialValue: data.length > 0 ? data[0]._id : '' })(
-                            <Input style={{ display: 'none', visible: false }} />
-                        )}
-                    </FormItem>
-                    <FormItem>
-                        {getFieldDecorator('groupId', { initialValue: userGroup })(
-                            <Select mode="multiple" >
-                                {
-                                    groupList.map((group) => {
-                                        return <Option value={group._id} key={group._id}>{group.group_name}</Option>;
-                                    })
-                                }
-                            </Select>
-                        )}
-                    </FormItem>
-                </Form>
-            </Modal>
-        );
-    }
+  render() {
+    const { getFieldDecorator } = this.props.form
+    const { data, groupList } = this.props
+    const userGroup = data.length > 0 ? data[0].group.map(obj => obj._id) : []
+    return (
+      <Modal
+        title="Add User To Group"
+        visible={this.props.visible}
+        onOk={this.props.onOk}
+        onCancel={this.props.onCancel}
+        destroyOnClose
+      >
+        <Form onSubmit={this.props.handleSubmit} layout="horizontal">
+          <FormItem>
+            {getFieldDecorator('id', { initialValue: data.length > 0 ? data[0]._id : '' })(
+              <Input style={{ display: 'none', visible: false }} />,
+            )}
+          </FormItem>
+          <FormItem>
+            {getFieldDecorator('groupId', { initialValue: userGroup })(
+              <Select mode="multiple">
+                {groupList.map(group => {
+                  return (
+                    <Option value={group._id} key={group._id}>
+                      {group.group_name}
+                    </Option>
+                  )
+                })}
+              </Select>,
+            )}
+          </FormItem>
+        </Form>
+      </Modal>
+    )
+  }
 }
 
 class AddToRoleForm extends Component {
-    render() {
-        const { getFieldDecorator } = this.props.form;
-        const { data, roleList } = this.props;
-        const userRole = data.length > 0 ? data[0].role.map((obj) => obj._id) : [];
-        return (
-            <Modal
-                title="Add Role for User"
-                visible={this.props.visible}
-                onOk={this.props.onOk}
-                onCancel={this.props.onCancel}
-                destroyOnClose
-            >
-                <Form onSubmit={this.props.handleSubmit} layout="horizontal">
-                    <FormItem>
-                        {getFieldDecorator('id', { initialValue: data.length > 0 ? data[0]._id : '' })(
-                            <Input style={{ display: 'none', visible: false }} />
-                        )}
-                    </FormItem>
-                    <FormItem>
-                        {getFieldDecorator('roleId', { initialValue: userRole })(
-                            <Select mode="multiple" >
-                                {
-                                    roleList.map((role) => {
-                                        return <Option value={role._id} key={role._id}>{role.role_name}</Option>;
-                                    })
-                                }
-                            </Select>
-                        )}
-                    </FormItem>
-                </Form>
-            </Modal>
-        );
-    }
+  render() {
+    const { getFieldDecorator } = this.props.form
+    const { data, roleList } = this.props
+    const userRole = data.length > 0 ? data[0].role.map(obj => obj._id) : []
+    return (
+      <Modal
+        title="Add Role for User"
+        visible={this.props.visible}
+        onOk={this.props.onOk}
+        onCancel={this.props.onCancel}
+        destroyOnClose
+      >
+        <Form onSubmit={this.props.handleSubmit} layout="horizontal">
+          <FormItem>
+            {getFieldDecorator('id', { initialValue: data.length > 0 ? data[0]._id : '' })(
+              <Input style={{ display: 'none', visible: false }} />,
+            )}
+          </FormItem>
+          <FormItem>
+            {getFieldDecorator('roleId', { initialValue: userRole })(
+              <Select mode="multiple">
+                {roleList.map(role => {
+                  return (
+                    <Option value={role._id} key={role._id}>
+                      {role.role_name}
+                    </Option>
+                  )
+                })}
+              </Select>,
+            )}
+          </FormItem>
+        </Form>
+      </Modal>
+    )
+  }
 }
 
-const WrappedAddUserForm = Form.create()(AddUserForm);
-const WrappedUpdateUserForm = Form.create()(UpdateUserForm);
-const WrappedAddToGroupForm = Form.create()(AddToGroupForm);
-const WrappedAddToRoleForm = Form.create()(AddToRoleForm);
+const WrappedAddUserForm = Form.create()(AddUserForm)
+const WrappedUpdateUserForm = Form.create()(UpdateUserForm)
+const WrappedAddToGroupForm = Form.create()(AddToGroupForm)
+const WrappedAddToRoleForm = Form.create()(AddToRoleForm)
 
 class UserForm extends Component {
-
     state = {
         userList: [],
         roleList: [],
@@ -327,88 +299,104 @@ class UserForm extends Component {
         });
     };
 
-    showAddUserModal = () => {
-        this.setState({ showAddUserModal: true });
-    }
+  showAddUserModal = () => {
+    this.setState({ showAddUserModal: true })
+  }
 
-    closeAddUserModal = () => {
-        this.setState({ showAddUserModal: false });
-    }
+  closeAddUserModal = () => {
+    this.setState({ showAddUserModal: false })
+  }
 
-    showUpdateModal = () => {
-        this.setState({ showUpdateModal: true });
-    }
+  showUpdateModal = () => {
+    this.setState({ showUpdateModal: true })
+  }
 
-    closeUpdateModal = () => {
-        this.setState({ showUpdateModal: false });
-    }
+  closeUpdateModal = () => {
+    this.setState({ showUpdateModal: false })
+  }
 
-    showAddToGroupModal = () => {
-        this.setState({ showAddToGroupModal: true });
-    }
+  showAddToGroupModal = () => {
+    this.setState({ showAddToGroupModal: true })
+  }
 
-    closeAddToGroupModal = () => {
-        this.setState({ showAddToGroupModal: false });
-    }
+  closeAddToGroupModal = () => {
+    this.setState({ showAddToGroupModal: false })
+  }
 
-    showAddToRoleModal = () => {
-        this.setState({ showAddToRoleModal: true });
-    }
+  showAddToRoleModal = () => {
+    this.setState({ showAddToRoleModal: true })
+  }
 
-    closeAddToRoleModal = () => {
-        this.setState({ showAddToRoleModal: false });
-    }
+  closeAddToRoleModal = () => {
+    this.setState({ showAddToRoleModal: false })
+  }
 
-    handleUpdate = () => {
-        this.updateUserForm.validateFields((err, values) => {
-            if (!err) {
-                axios.put('api/admin/user/update', { ...values })
-                    .then((res) => {
-                        console.log(res.data);
-                        let temp = [...this.state.userList];
-                        temp.splice(_.findIndex(temp, { _id: res.data.id }), 1, { ...res.data });
-                        this.setState({ userList: temp });
-                        this.closeUpdateModal();
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                    });
-            }
-            else {
-                console.log(err);
-            }
-        });
-    }
+  handleUpdate = () => {
+    this.updateUserForm.validateFields((err, values) => {
+      if (!err) {
+        axios
+          .put('api/admin/user/update', { ...values })
+          .then(res => {
+            console.log(res.data)
+            let temp = [...this.state.userList]
+            temp.splice(_.findIndex(temp, { _id: res.data.id }), 1, { ...res.data })
+            this.setState({ userList: temp })
+            this.closeUpdateModal()
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      } else {
+        console.log(err)
+      }
+    })
+  }
 
-    handleDelete = () => {
-        axios.delete('api/admin/user/delete', { data: { userIds: this.state.selectedRowKeys } })
-            .then((res) => {
-                console.log(res.data);
-                let temp = [...this.state.userList];
-                temp = temp.filter((obj) => !_.includes(res.data, obj._id));
-                this.setState({ userList: temp, selectedRowKeys: [], selectedRows: [] });
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    };
+  handleDelete = () => {
+    axios
+      .delete('api/admin/user/delete', { data: { userIds: this.state.selectedRowKeys } })
+      .then(res => {
+        console.log(res.data)
+        let temp = [...this.state.userList]
+        temp = temp.filter(obj => !_.includes(res.data, obj._id))
+        this.setState({ userList: temp, selectedRowKeys: [], selectedRows: [] })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
 
-    handleAddToGroup = () => {
-        this.addToGroupForm.validateFields((err, value) => {
-            if (!err) {
-                axios.put('api/admin/user/addgroup', { ...value })
-                    .then((res) => {
-                        let temp = [...this.state.userList];
-                        temp.splice(_.findIndex(temp, { _id: res.data._id }), 1, { ...res.data });
-                        this.setState({ userList: temp });
-                        this.closeAddToGroupModal();
-                    })
-                    .catch((err) => {
+  handleAddToGroup = () => {
+    this.addToGroupForm.validateFields((err, value) => {
+      if (!err) {
+        axios
+          .put('api/admin/user/addgroup', { ...value })
+          .then(res => {
+            let temp = [...this.state.userList]
+            temp.splice(_.findIndex(temp, { _id: res.data._id }), 1, { ...res.data })
+            this.setState({ userList: temp })
+            this.closeAddToGroupModal()
+          })
+          .catch(err => {})
+      }
+    })
+  }
 
-                    })
-            }
-        })
-    }
+  handleAddToRole = () => {
+    this.addToRoleForm.validateFields((err, value) => {
+      if (!err) {
+        axios
+          .put('api/admin/user/addrole', { ...value })
+          .then(res => {
+            let temp = [...this.state.userList]
+            temp.splice(_.findIndex(temp, { _id: res.data._id }), 1, { ...res.data })
+            this.setState({ userList: temp })
+            this.closeAddToRoleModal()
+          })
+          .catch(err => {})
+      }
+    })
+  }
 
     handleAddToRole = () => {
         this.addToRoleForm.validateFields((err, value) => {
@@ -483,4 +471,4 @@ class UserForm extends Component {
     }
 }
 
-export default UserForm;
+export default UserForm

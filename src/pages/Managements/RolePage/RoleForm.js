@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Row, Col, Form, Input, Button, Table, Divider, Modal, Popconfirm, TreeSelect, Spin } from 'antd'
 import _ from 'lodash'
-import axios from '../../../axiosIns'
+import axios from '../../../axiosInst'
 
 const FormItem = Form.Item
 const formItemLayout = {
@@ -26,25 +26,31 @@ const columns = [
     render: (text, record) => (
       <span>{text === null ? '' : new Date(text).toLocaleDateString('vi-VN')}</span>
     ),
-  }, {
+  },
+  {
     title: 'Menu',
     dataIndex: 'menu',
     render: (text, record) => (
       <span>
-        {text.map((obj) => {
+        {text.map(obj => {
           return <p key={obj._id}>{obj.menu_label}</p>
         })}
       </span>
     ),
-  }
-];
+  },
+]
 
-const converToTreeNode = (data) => {
-  return data.map((obj) => {
+const converToTreeNode = data => {
+  return data.map(obj => {
     if (obj.children) {
-      return { title: obj.menu_label, key: obj._id, value: obj._id, children: converToTreeNode(obj.children) }
+      return {
+        title: obj.menu_label,
+        key: obj._id,
+        value: obj._id,
+        children: converToTreeNode(obj.children),
+      }
     }
-    return { title: obj.menu_label, key: obj._id, value: obj._id };
+    return { title: obj.menu_label, key: obj._id, value: obj._id }
   })
 }
 
@@ -94,26 +100,23 @@ class UpdateRoleForm extends Component {
             )}
           </FormItem>
           <FormItem label="Role Name" {...formItemLayout}>
-            {
-              getFieldDecorator('role_name',
-                { initialValue: data.length > 0 ? data[0].role_name : '' },
-                {
-                  rules: [{ required: true, message: 'Please input role name!' }],
-                },
-              )(<Input />)}
+            {getFieldDecorator(
+              'role_name',
+              { initialValue: data.length > 0 ? data[0].role_name : '' },
+              {
+                rules: [{ required: true, message: 'Please input role name!' }],
+              },
+            )(<Input />)}
           </FormItem>
           <FormItem label="Menu" {...formItemLayout}>
-            {
-              getFieldDecorator('menu',
-                { initialValue: menu },
-              )(
-                <TreeSelect
-                  style={{ width: 300 }}
-                  placeholder="Please select"
-                  treeData={treeData}
-                  treeCheckable
-                />
-              )}
+            {getFieldDecorator('menu', { initialValue: menu })(
+              <TreeSelect
+                style={{ width: 300 }}
+                placeholder="Please select"
+                treeData={treeData}
+                treeCheckable
+              />,
+            )}
           </FormItem>
         </Form>
       </Modal>
@@ -150,24 +153,24 @@ class RoleForm extends Component {
       })
       .catch(err => {
         console.log(err)
-      });
-    axios.get('api/admin/menu/getroot')
+      })
+    axios
+      .get('api/admin/menu/getroot')
       .then(res => {
-        let rs = res.data;
+        let rs = res.data
         if (rs.valid) {
-          let menu_data = [];
-          menu_data = converToTreeNode(rs.data);
-          this.setState({ menu_data: menu_data });
+          let menu_data = []
+          menu_data = converToTreeNode(rs.data)
+          this.setState({ menu_data: menu_data })
         } else {
-          this.setState({ menu_data: [] });
-          alert(rs.message);
+          this.setState({ menu_data: [] })
+          alert(rs.message)
         }
       })
       .catch(err => {
-        console.log(err);
+        console.log(err)
       })
   }
-
 
   showUpdateModal = () => {
     this.setState({ showUpdateModal: true })
@@ -231,7 +234,7 @@ class RoleForm extends Component {
       })
   }
 
-  onChangeTreeNode = (value) => {
+  onChangeTreeNode = value => {
     this.setState({ selectedMenu: value })
   }
 
@@ -264,7 +267,7 @@ class RoleForm extends Component {
               disabled={selectedRows.length === 0 || selectedRows.length > 1 ? true : false}
             >
               Edit
-          </Button>
+            </Button>
             <Divider type="vertical" />
             <Popconfirm
               title="Are you sure delete?"
@@ -279,7 +282,7 @@ class RoleForm extends Component {
                 disabled={selectedRows.length === 0 ? true : false}
               >
                 Delete
-            </Button>
+              </Button>
             </Popconfirm>
             <Spin spinning={loading}>
               <Table

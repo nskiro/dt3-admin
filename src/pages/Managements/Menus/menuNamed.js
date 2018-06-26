@@ -17,7 +17,7 @@ const TreeNode = Tree.TreeNode
 
 const ac_get_link = 'api/admin/accesslink/get'
 
-const menu_getroot_link = 'api/admin/menu/getroot'
+const menu_getroot_link = 'api/admin/menu/get'
 const menu_get_link = 'api/admin/menu/get'
 const menu_getwithlabels_link = 'api/admin/menu/getwithlabels'
 const menu_add_link = 'api/admin/menu/add'
@@ -41,6 +41,7 @@ class MenuEditForm extends Component {
       searchValue: '',
       data_ref: this.props.data,
       autoExpandParent: true,
+      options: [],
     }
   }
 
@@ -50,9 +51,14 @@ class MenuEditForm extends Component {
       .then(res => {
         let rs = res.data
         if (rs.valid) {
-          this.setState({ access_link_data: rs.data })
+          let options = rs.data.map(d => (
+            <Option value={d._id} key={d._id}>
+              {d.name}
+            </Option>
+          ))
+          this.setState({ access_link_data: rs.data, options: options })
         } else {
-          this.setState({ access_link_data: [] })
+          this.setState({ access_link_data: [], options: [] })
           alert(rs.message)
         }
       })
@@ -159,7 +165,7 @@ class MenuEditForm extends Component {
   render() {
     const { visible, onCancel, onCreate, form } = this.props
     const { getFieldDecorator } = form
-    const options = this.state.access_link_data.map(d => <Option value={d._id}>{d.name}</Option>)
+    //const options = this.state.access_link_data.map(d => <Option value={d._id}>{d.name}</Option>)
 
     let data_ref = this.state.data_ref
     return (
@@ -242,7 +248,7 @@ class MenuEditForm extends Component {
                           placeholder="access link"
                           onChange={this.handleChange}
                         >
-                          {options}
+                          {this.state.options}
                         </Select>,
                       )}
                     </FormItem>
