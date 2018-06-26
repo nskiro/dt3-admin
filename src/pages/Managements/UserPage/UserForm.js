@@ -1,14 +1,7 @@
-<<<<<<< HEAD
 import React, { Component } from 'react';
 import { Row, Col, Form, Input, Button, Table, Divider, Modal, Popconfirm, Select, Tag, Spin } from 'antd';
 import _ from 'lodash';
-import axios from '../../../axiosIns';
-=======
-import React, { Component } from 'react'
-import { Row, Col, Form, Input, Button, Table, Divider, Modal, Popconfirm, Select, Tag } from 'antd'
-import _ from 'lodash'
-import axios from '../../../axiosInst'
->>>>>>> 699b3ac44eae83ebbaca6361e9b1c677f4c84029
+import axios from '../../../axiosInst';
 
 const FormItem = Form.Item
 const Option = Select.Option
