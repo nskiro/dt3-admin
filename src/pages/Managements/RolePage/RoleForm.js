@@ -114,7 +114,7 @@ class UpdateRoleForm extends Component {
                 style={{ width: 300 }}
                 placeholder="Please select"
                 treeData={treeData}
-                treeCheckable
+                multiple
               />,
             )}
           </FormItem>

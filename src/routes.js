@@ -50,6 +50,9 @@ const loadableRoutes = {
   '/admin/user-authorization': {
     component: loadable(() => import('pages/Managements/UserPage')),
   },
+
+  //Department Page
+  '/admin/department': { component: loadable(() => import('pages/Managements/DepartmentPage')), }
 }
 
 class Routes extends React.Component {

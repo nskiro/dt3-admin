@@ -17,22 +17,11 @@ const menuData = [
     url: '/dashboard/alpha',
     icon: 'icomn icmn-home',
   },
-  {
-    title: 'Empty Page',
-    key: 'emptyPage',
-    url: '/pages/empty',
-    icon: 'icomn icmn-star-full',
-  },
-  {
-    title: 'Management',
-    key: 'management',
-    icon: 'icomn icmn-indent-increase',
-    children: [
-      { key: 'user', title: 'User', url: '/admin/user-authorization', icon: 'icomn icmn-users' },
-      { key: 'menu', title: 'Menu', url: '/admin/menus', icon: 'icmn-rocket' },
-      { key: 'role', title: 'Role-Group', url: '/admin/role-group', icon: 'icomn icmn-key2' },
-    ],
-  },
+  { key: 'user', title: 'User', url: '/admin/user-authorization', icon: 'icomn icmn-users' },
+  { key: 'dept', title: 'Department', url: '/admin/department', icon: 'icomn icmn-key2' },
+  { key: 'menu', title: 'Menu', url: '/admin/menus', icon: 'icmn-rocket' },
+  { key: 'role', title: 'Role-Group', url: '/admin/role-group', icon: 'icomn icmn-key2' },
+  
 ]
 
 const mapStateToProps = (state, props) => ({
@@ -146,8 +135,8 @@ class MenuSider extends React.Component {
           onClick={
             this.props.isMobile
               ? () => {
-                  dispatch(setLayoutState({ menuCollapsed: false }))
-                }
+                dispatch(setLayoutState({ menuCollapsed: false }))
+              }
               : undefined
           }
         >
@@ -156,11 +145,11 @@ class MenuSider extends React.Component {
         </Link>
       </Menu.Item>
     ) : (
-      <Menu.Item key={key} disabled={disabled}>
-        <span className="menuSider__item-title">{title}</span>
-        {icon && <span className={icon + ' menuSider__icon'} />}
-      </Menu.Item>
-    )
+          <Menu.Item key={key} disabled={disabled}>
+            <span className="menuSider__item-title">{title}</span>
+            {icon && <span className={icon + ' menuSider__icon'} />}
+          </Menu.Item>
+        )
   }
 
   onCollapse = (collapsed, type) => {
@@ -211,10 +200,10 @@ class MenuSider extends React.Component {
               <img src="resources/images/ERGObabyLogo-STANDARD.png" alt="" />
             </div>
           ) : (
-            <div className="menuSider__logoContainer">
-              <img src="resources/images/Ergobaby-logo.png" alt="" />
-            </div>
-          )}
+              <div className="menuSider__logoContainer">
+                <img src="resources/images/Ergobaby-logo.png" alt="" />
+              </div>
+            )}
         </div>
         <Menu
           theme={themeLight ? 'light' : 'dark'}

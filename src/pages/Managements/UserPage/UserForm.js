@@ -22,6 +22,11 @@ const columns = [
   {
     title: 'Department',
     dataIndex: 'dept',
+    render: (text, record) => (
+      <Tag color="#1faee9" key={text.name}>
+        {text.name}
+      </Tag>
+    )
   },
   {
     title: 'Last Login',
@@ -63,7 +68,7 @@ const columns = [
 class AddUserForm extends Component {
   render() {
     const { getFieldDecorator } = this.props.form
-
+    const { deptList } = this.props
     return (
       <Modal
         title="New User"
@@ -91,7 +96,15 @@ class AddUserForm extends Component {
           <FormItem label="Department" {...formItemLayout}>
             {getFieldDecorator('dept', {
               rules: [{ required: true, message: 'Please input department!' }],
-            })(<Input />)}
+            })(
+              <Select style={{ width: 120 }}>
+                {
+                  deptList.map((dept) => {
+                    return <Option key={dept._id} value={dept._id}>{dept.name}</Option>
+                  })
+                }
+              </Select>
+            )}
           </FormItem>
         </Form>
       </Modal>
@@ -102,7 +115,7 @@ class AddUserForm extends Component {
 class UpdateUserForm extends Component {
   render() {
     const { getFieldDecorator } = this.props.form
-    const { data } = this.props
+    const { data, deptList } = this.props
     return (
       <Modal
         title="Update User Detail"
@@ -138,8 +151,14 @@ class UpdateUserForm extends Component {
           <FormItem label="Department" {...formItemLayout}>
             {getFieldDecorator('dept', {
               rules: [{ required: true, message: 'Please input department!' }],
-              initialValue: data.length > 0 ? data[0].dept : '',
-            })(<Input />)}
+              initialValue: data.length > 0 ? data[0].dept._id : '',
+            })(<Select style={{ width: 120 }}>
+              {
+                deptList.map((dept) => {
+                  return <Option key={dept._id} value={dept._id}>{dept.name}</Option>
+                })
+              }
+            </Select>)}
           </FormItem>
         </Form>
       </Modal>
@@ -229,68 +248,76 @@ const WrappedAddToGroupForm = Form.create()(AddToGroupForm)
 const WrappedAddToRoleForm = Form.create()(AddToRoleForm)
 
 class UserForm extends Component {
-    state = {
-        userList: [],
-        roleList: [],
-        groupList: [],
-        loading: false,
-        selectedRows: [],
-        selectedRowKeys: [],
-        showAddUserModal: false,
-        showUpdateModal: false,
-        showAddToRoleModal: false,
-        showAddToGroupModal: false,
+  state = {
+    userList: [],
+    roleList: [],
+    groupList: [],
+    deptList: [],
+    loading: false,
+    selectedRows: [],
+    selectedRowKeys: [],
+    showAddUserModal: false,
+    showUpdateModal: false,
+    showAddToRoleModal: false,
+    showAddToGroupModal: false,
 
+  }
+
+  rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      this.setState({ selectedRows, selectedRowKeys });
     }
+  };
 
-    rowSelection = {
-        onChange: (selectedRowKeys, selectedRows) => {
-            this.setState({ selectedRows, selectedRowKeys });
-        }
-    };
-
-    componentDidMount() {
-        this.setState({ loading: true });
-        axios.get('api/admin/user')
-            .then((res) => {
-                this.setState({ userList: res.data, loading: false });
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-        axios.get('api/admin/group')
-            .then((res) => {
-                this.setState({ groupList: res.data });
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-        axios.get('api/admin/role')
-            .then((res) => {
-                this.setState({ roleList: res.data });
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }
-    handleSubmit = (e) => {
-        e.preventDefault();
-        this.addUserForm.validateFields((err, values) => {
-            if (!err) {
-                axios.post('api/admin/user/add', { ...values })
-                    .then((res) => {
-                        console.log(res.data);
-                        let temp = [...this.state.userList];
-                        temp.push(res.data);
-                        this.setState({ userList: temp });
-                        this.closeAddUserModal();
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                    });
-            }
-        });
-    };
+  componentDidMount() {
+    this.setState({ loading: true });
+    axios.get('api/admin/user')
+      .then((res) => {
+        this.setState({ userList: res.data, loading: false });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    axios.get('api/admin/group')
+      .then((res) => {
+        this.setState({ groupList: res.data });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    axios.get('api/admin/role')
+      .then((res) => {
+        this.setState({ roleList: res.data });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    axios.get('api/admin/dept')
+      .then(res => {
+        this.setState({ deptList: res.data, loading: false });
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.addUserForm.validateFields((err, values) => {
+      if (!err) {
+        axios.post('api/admin/user/add', { ...values })
+          .then((res) => {
+            console.log(res.data);
+            let temp = [...this.state.userList];
+            temp.push(res.data);
+            this.setState({ userList: temp });
+            this.closeAddUserModal();
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    });
+  };
 
   showAddUserModal = () => {
     this.setState({ showAddUserModal: true })
@@ -370,7 +397,7 @@ class UserForm extends Component {
             this.setState({ userList: temp })
             this.closeAddToGroupModal()
           })
-          .catch(err => {})
+          .catch(err => { })
       }
     })
   }
@@ -386,82 +413,84 @@ class UserForm extends Component {
             this.setState({ userList: temp })
             this.closeAddToRoleModal()
           })
-          .catch(err => {})
+          .catch(err => { })
       }
     })
   }
 
-    handleAddToRole = () => {
-        this.addToRoleForm.validateFields((err, value) => {
-            if (!err) {
-                axios.put('api/admin/user/addrole', { ...value })
-                    .then((res) => {
-                        let temp = [...this.state.userList];
-                        temp.splice(_.findIndex(temp, { _id: res.data._id }), 1, { ...res.data });
-                        this.setState({ userList: temp });
-                        this.closeAddToRoleModal();
-                    })
-                    .catch((err) => {
+  handleAddToRole = () => {
+    this.addToRoleForm.validateFields((err, value) => {
+      if (!err) {
+        axios.put('api/admin/user/addrole', { ...value })
+          .then((res) => {
+            let temp = [...this.state.userList];
+            temp.splice(_.findIndex(temp, { _id: res.data._id }), 1, { ...res.data });
+            this.setState({ userList: temp });
+            this.closeAddToRoleModal();
+          })
+          .catch((err) => {
 
-                    })
-            }
-        })
-    }
+          })
+      }
+    })
+  }
 
-    render() {
-        const { loading, userList, groupList, roleList, selectedRows, showAddUserModal, showUpdateModal, showAddToGroupModal, showAddToRoleModal } = this.state;
-        return (
-            <Row>
-                <Col>
-                    <WrappedAddUserForm
-                        ref={node => this.addUserForm = node}
-                        visible={showAddUserModal}
-                        onOk={this.handleSubmit}
-                        onCancel={this.closeAddUserModal}
-                    />
-                    <WrappedUpdateUserForm
-                        ref={node => this.updateUserForm = node}
-                        visible={showUpdateModal}
-                        onOk={this.handleUpdate}
-                        onCancel={this.closeUpdateModal}
-                        data={selectedRows}
-                    />
-                    <WrappedAddToGroupForm
-                        ref={node => this.addToGroupForm = node}
-                        visible={showAddToGroupModal}
-                        onOk={this.handleAddToGroup}
-                        onCancel={this.closeAddToGroupModal}
-                        data={selectedRows}
-                        groupList={groupList}
-                    />
-                    <WrappedAddToRoleForm
-                        ref={node => this.addToRoleForm = node}
-                        visible={showAddToRoleModal}
-                        onOk={this.handleAddToRole}
-                        onCancel={this.closeAddToRoleModal}
-                        data={selectedRows}
-                        roleList={roleList}
-                    />
-                </Col>
-                <Col span={24}>
-                    <Button type="primary" icon="plus-circle" size="small" onClick={this.showAddUserModal}>Add</Button>
-                    <Divider type="vertical" />
-                    <Button icon="key" size="small" onClick={this.showAddToRoleModal} disabled={selectedRows.length === 0 || selectedRows.length > 1 ? true : false}>Role</Button>
-                    <Divider type="vertical" />
-                    <Button icon="team" size="small" onClick={this.showAddToGroupModal} disabled={selectedRows.length === 0 || selectedRows.length > 1 ? true : false}>Group</Button>
-                    <Divider type="vertical" />
-                    <Button icon="edit" size="small" onClick={this.showUpdateModal} disabled={selectedRows.length === 0 || selectedRows.length > 1 ? true : false}>Edit</Button>
-                    <Divider type="vertical" />
-                    <Popconfirm title="Are you sure delete?" onConfirm={this.handleDelete} okText="Yes" cancelText="No">
-                        <Button icon="close" type="danger" size="small" disabled={selectedRows.length === 0 ? true : false}>Delete</Button>
-                    </Popconfirm>
-                    <Spin spinning={loading}>
-                        <Table style={{ marginTop: '5px' }} size="small" bordered rowKey={'_id'} columns={columns} dataSource={userList} rowSelection={this.rowSelection} />
-                    </Spin>
-                </Col>
-            </Row>
-        )
-    }
+  render() {
+    const { loading, userList, deptList, groupList, roleList, selectedRows, showAddUserModal, showUpdateModal, showAddToGroupModal, showAddToRoleModal } = this.state;
+    return (
+      <Row>
+        <Col>
+          <WrappedAddUserForm
+            ref={node => this.addUserForm = node}
+            visible={showAddUserModal}
+            onOk={this.handleSubmit}
+            onCancel={this.closeAddUserModal}
+            deptList = {deptList}
+          />
+          <WrappedUpdateUserForm
+            ref={node => this.updateUserForm = node}
+            visible={showUpdateModal}
+            onOk={this.handleUpdate}
+            onCancel={this.closeUpdateModal}
+            data={selectedRows}
+            deptList = {deptList}
+          />
+          <WrappedAddToGroupForm
+            ref={node => this.addToGroupForm = node}
+            visible={showAddToGroupModal}
+            onOk={this.handleAddToGroup}
+            onCancel={this.closeAddToGroupModal}
+            data={selectedRows}
+            groupList={groupList}
+          />
+          <WrappedAddToRoleForm
+            ref={node => this.addToRoleForm = node}
+            visible={showAddToRoleModal}
+            onOk={this.handleAddToRole}
+            onCancel={this.closeAddToRoleModal}
+            data={selectedRows}
+            roleList={roleList}
+          />
+        </Col>
+        <Col span={24}>
+          <Button type="primary" icon="plus-circle" size="small" onClick={this.showAddUserModal}>Add</Button>
+          <Divider type="vertical" />
+          <Button icon="key" size="small" onClick={this.showAddToRoleModal} disabled={selectedRows.length === 0 || selectedRows.length > 1 ? true : false}>Role</Button>
+          <Divider type="vertical" />
+          <Button icon="team" size="small" onClick={this.showAddToGroupModal} disabled={selectedRows.length === 0 || selectedRows.length > 1 ? true : false}>Group</Button>
+          <Divider type="vertical" />
+          <Button icon="edit" size="small" onClick={this.showUpdateModal} disabled={selectedRows.length === 0 || selectedRows.length > 1 ? true : false}>Edit</Button>
+          <Divider type="vertical" />
+          <Popconfirm title="Are you sure delete?" onConfirm={this.handleDelete} okText="Yes" cancelText="No">
+            <Button icon="close" type="danger" size="small" disabled={selectedRows.length === 0 ? true : false}>Delete</Button>
+          </Popconfirm>
+          <Spin spinning={loading}>
+            <Table style={{ marginTop: '5px' }} size="small" bordered rowKey={'_id'} columns={columns} dataSource={userList} rowSelection={this.rowSelection} />
+          </Spin>
+        </Col>
+      </Row>
+    )
+  }
 }
 
 export default UserForm
